@@ -4,15 +4,12 @@ Visualizing sorting algorithms
 
 ## Compilation and running
 
-Clone the repository
 ```javascript
-git clone https://github.com/thomas1242/Sorting/
-```
 
-Compile and run the source code
-```javascript 
-javac Sorting/src/*.java
-java -cp Sorting/src Main
+git clone https://github.com/thomas1242/Sorting/    # clone the repository   
+javac Sorting/src/*.java                            # compile the source code
+java -cp Sorting/src Main                           # run the program         
+
 ```
 
 ## Usage
