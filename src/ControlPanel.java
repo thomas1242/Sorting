@@ -77,10 +77,10 @@ public class ControlPanel extends JPanel {
             }
         });
 
-        algoPanel.add(selectBFS);
-        algoPanel.add(selectDFS);
-        algoPanel.add(selectDijkstra);
-        algoPanel.add(selectA_star);
+        // algoPanel.add(selectBFS);
+        // algoPanel.add(selectDFS);
+        // algoPanel.add(selectDijkstra);
+        // algoPanel.add(selectA_star);
 
         JPanel clearPanel = new JPanel(new GridLayout(0, 2));
         JButton clearObstacles, clearPath;
@@ -160,7 +160,11 @@ public class ControlPanel extends JPanel {
 
         add(startSearch);
         add(algo_label);
-        add(algoPanel);
+        // add(algoPanel);
+        add(selectBFS);
+        add(selectDFS);
+        add(selectDijkstra);
+        add(selectA_star);
         add(speedSlider);
         add(new SizeSlider(imagePanel));
         add(clearPanel);
