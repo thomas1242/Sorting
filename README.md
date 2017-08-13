@@ -8,7 +8,7 @@ Visualizing sorting algorithms
 
 git clone https://github.com/thomas1242/Sorting/    # clone the repository 
 javac Sorting/src/*.java                            # compile the source code
-java -cp Sorting/src Main                           # run the program
+java -cp Sorting/src Main                           # run the program        
 
 ```
 
