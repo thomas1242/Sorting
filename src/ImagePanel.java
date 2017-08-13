@@ -6,8 +6,7 @@ import java.util.*;
 
 public class ImagePanel extends JLayeredPane {
 
-    // Image
-    private BufferedImage image = null;
+    private BufferedImage image = null; 
     private Graphics2D g2d = null;
 
     private ControlPanel controlPanel;
@@ -17,6 +16,9 @@ public class ImagePanel extends JLayeredPane {
         setBounds(0, 0, width, height);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
+
+        g2d.setColor( new Color(0xffbbbbbb) );                  // draw background
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
        
         addComponents();
         addListeners();
