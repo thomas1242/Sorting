@@ -11,7 +11,7 @@ public class ImagePanel extends JLayeredPane {
     private Graphics2D g2d = null;
 
     private ControlPanel controlPanel;
-    boolean isRunning;
+    public boolean isRunning;
 
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
