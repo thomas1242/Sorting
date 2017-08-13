@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 
 public class ImagePanel extends JLayeredPane {
 
@@ -10,7 +9,7 @@ public class ImagePanel extends JLayeredPane {
     private Graphics2D g2d = null;
 
     private ControlPanel controlPanel;
-    public boolean isRunning;
+    private boolean isPaused;
 
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
@@ -36,13 +35,13 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public boolean paused() {
-        if( isRunning )
+        if(isPaused)
             return false;
         try {
              Thread.sleep(50);
         }
         catch(InterruptedException e) {}
-        return isRunning == false;
+        return isPaused == false;
     }
 
     public void addListeners() {
@@ -71,6 +70,10 @@ public class ImagePanel extends JLayeredPane {
 
             public void mouseMoved(MouseEvent event) {}
         });
+    }
+
+    public int getImageWidth() {
+        return image.getWidth();
     }
 
     protected void paintComponent(Graphics g) {

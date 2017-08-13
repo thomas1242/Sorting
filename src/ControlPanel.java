@@ -6,162 +6,19 @@ import java.awt.event.*;
 
 public class ControlPanel extends JPanel {
 
-    private ImagePanel imagePanel;
-    private JButton startSearch, createMaze;
-    private JButton selectBFS, selectDFS, selectDijkstra, selectA_star;
-    private Color textColor = new Color(0, 0, 0, 250);
-    private int x, y, curr_x, curr_y, width, height; 
+    private int x, y, curr_x, curr_y;
+    private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, sortorderBtn, startSearch;
 
     public ControlPanel(ImagePanel imagePanel) {
         
-        setLayout(new GridLayout(0, 1));
-        this.imagePanel = imagePanel;
-        width = (int)(imagePanel.getWidth() * .175);
-        height = (int)(imagePanel.getHeight() * .5);
+        int width = (int)(imagePanel.getWidth() * .175);
+        int height = (int)(imagePanel.getHeight() * .5);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
         y = curr_y = (int)(imagePanel.getHeight() * .25);
         setBounds(x, y, width, height);
 
-        startSearch = new JButton("Start sort");
-        startSearch.setForeground(  new Color(0, 175, 0, 255)  );
-        startSearch.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(startSearch.getText().equals("Start sort"))
-                    runSearch();
-                else if (startSearch.getText().equals( "Pause"))
-                    pauseSearch();
-                else if (startSearch.getText().equals( "Resume"))
-                    resumeSearch();
-            }
-        });
-
-        createMaze = new JButton("Ascending sort");
-        createMaze.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(createMaze.getText().equals("Ascending sort"))
-                    setDecendingSort();
-                else if (createMaze.getText().equals( "Descending sort"))
-                    setAscendingSort();
-            }
-        });
-
-        selectBFS = new JButton("Quicksort");
-        selectBFS.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectBFS();
-            }
-        });
-
-        selectDFS = new JButton("Merge Sort");
-        selectDFS.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectDFS();
-            }
-        });
-
-        selectDijkstra = new JButton("Bubble sort");
-        selectDijkstra.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectDijkstra();
-            }
-        });
-
-        selectA_star = new JButton("Insertion sort");
-        selectA_star.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectAstar();
-            }
-        });
-
-        // animation speed slider
-        JPanel speedSlider = new JPanel();
-        speedSlider.setLayout(new GridLayout(0, 1));
-
-        JLabel label = new JLabel(" Speed");
-        label.setFont(new Font("plain", Font.BOLD, 14));
-        label.setForeground( new Color(0xffbbbbbb) );
-
-        JSlider slider = new JSlider(0, 50, 25);
-        slider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                
-            }
-        });;
-        slider.setMinorTickSpacing(1);
-        // slider.setPaintTicks(true);
-        slider.setSnapToTicks(true);
-        speedSlider.add(label, BorderLayout.CENTER);
-        speedSlider.add(slider, BorderLayout.SOUTH);
-        speedSlider.setOpaque(false);
-        speedSlider.setVisible(true);
-
-        // animation speed slider
-        JPanel dataSlider = new JPanel();
-        dataSlider.setLayout(new GridLayout(0, 1));
-
-        JLabel label3 = new JLabel(" Data size");
-        label3.setFont(new Font("plain", Font.BOLD, 14));
-        label3.setForeground( new Color(0xffbbbbbb) );
-
-        JSlider dslider = new JSlider(0, 50, 25);
-        dslider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                
-            }
-        });;
-        dslider.setMinorTickSpacing(1);
-        // slider.setPaintTicks(true);
-        dslider.setSnapToTicks(true);
-        dataSlider.add(label3, BorderLayout.CENTER);
-        dataSlider.add(dslider, BorderLayout.SOUTH);
-        dataSlider.setOpaque(false);
-        dataSlider.setVisible(true);
-
-        JLabel algo_label = new JLabel(" Algorithms");
-
-        algo_label.setFont(new Font("plain", Font.BOLD, 14));
-        startSearch.setFont(new Font("plain", Font.BOLD, 13));
-        selectDFS.setFont(new Font("plain", Font.BOLD, 13));
-        selectBFS.setFont(new Font("plain", Font.BOLD, 13));
-        startSearch.setFont(new Font("plain", Font.BOLD, 13));
-        selectDijkstra.setFont(new Font("plain", Font.BOLD, 13));
-        selectA_star.setFont(new Font("plain", Font.BOLD, 13));
-        createMaze.setFont(new Font("plain", Font.BOLD, 13));
-
-        algo_label.setForeground( new Color(0xffbbbbbb) );
-        startSearch.setForeground(textColor);
-        createMaze.setForeground(textColor);
-        selectDFS.setForeground(textColor);
-        selectBFS.setForeground(textColor);
-        selectDijkstra.setForeground(textColor);
-        selectA_star.setForeground(textColor);
-        createMaze.setForeground( new Color(0, 175, 0, 255)  );
-
-        selectDFS.setOpaque(false);
-        selectBFS.setOpaque(false);
-        startSearch.setOpaque(false);
-        selectDijkstra.setOpaque(false);
-        selectA_star.setOpaque(false);
-
-        // add components
-        add(startSearch);
-        add(algo_label);
-        add(selectBFS);
-        add(selectDFS);
-        add(selectDijkstra);
-        add(selectA_star);
-        add(speedSlider);
-        add(new SizeSlider(imagePanel, this));
-        add(dataSlider);
-        add(createMaze);
+        setLayout(new GridLayout(0, 1));
+        addComponents(imagePanel);
 
         setBackground(new Color(50, 50, 50, 200));
         this.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220,  32), 6));
@@ -192,10 +49,11 @@ public class ControlPanel extends JPanel {
     }
 
     private void clearAll() {
-        selectBFS.setForeground(textColor);
-        selectDFS.setForeground(textColor);
-        selectDijkstra.setForeground(textColor);
-        selectA_star.setForeground(textColor);
+        Color textColor = new Color(0, 0, 0, 250);
+        quicksortBtn.setForeground(textColor);
+        mergesortBtn.setForeground(textColor);
+        bubblesortBtn.setForeground(textColor);
+        insertsortBtn.setForeground(textColor);
     }
 
     public void setSearchText(String s, Color c) {
@@ -204,8 +62,8 @@ public class ControlPanel extends JPanel {
     }
 
     public void setMazeText(String s, Color c) {
-        createMaze.setText(s);
-        createMaze.setForeground(c);
+        sortorderBtn.setText(s);
+        sortorderBtn.setForeground(c);
     }
 
     public void runSearch() {
@@ -224,7 +82,7 @@ public class ControlPanel extends JPanel {
     }
 
     public void readySearch() {
-        setSearchText("Start Sort", textColor);
+        setSearchText("Start Sort",    new Color(0, 0, 0, 250));
     }
 
     private void doSearch() {
@@ -232,70 +90,197 @@ public class ControlPanel extends JPanel {
     }
 
     private void setAscendingSort() {
-        createMaze.setText("Ascending sort");
+        sortorderBtn.setText("Ascending sort");
     }
 
     private void setDecendingSort() {
-        createMaze.setText("Descending sort");
+        sortorderBtn.setText("Descending sort");
     }
 
-    private void selectBFS() {
+    private void selectQuicksort() {
         clearAll();
-        selectBFS.setForeground(  new Color(0, 175, 0, 255)  );
+        quicksortBtn.setForeground(  new Color(0, 175, 0, 255)  );
     }
 
-    private void selectDFS() {
+    private void selectMergesort() {
         clearAll();
-        selectDFS.setForeground(  new Color(0, 175, 0, 255)  );
+        mergesortBtn.setForeground(  new Color(0, 175, 0, 255)  );
     }
 
-    private void selectAstar() {
+    private void selectInsertionsort() {
         clearAll();
-        selectA_star.setForeground(  new Color(0, 175, 0, 255)  );
+        insertsortBtn.setForeground(  new Color(0, 175, 0, 255)  );
     }
 
-    private void selectDijkstra() {
+    private void selectBubblesort() {
         clearAll();
-        selectDijkstra.setForeground(  new Color(0, 175, 0, 255)  );
+        bubblesortBtn.setForeground(  new Color(0, 175, 0, 255)  );
     }
 
-}
+    private void addComponents(ImagePanel imagePanel) {
+        startSearch = new JButton("Start sort");
+        startSearch.setForeground(  new Color(0, 175, 0, 255)  );
+        startSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(startSearch.getText().equals("Start sort"))
+                    runSearch();
+                else if (startSearch.getText().equals( "Pause"))
+                    pauseSearch();
+                else if (startSearch.getText().equals( "Resume"))
+                    resumeSearch();
+            }
+        });
 
-class SizeSlider extends JPanel {
+        sortorderBtn = new JButton("Ascending sort");
+        sortorderBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(sortorderBtn.getText().equals("Ascending sort"))
+                    setDecendingSort();
+                else if (sortorderBtn.getText().equals( "Descending sort"))
+                    setAscendingSort();
+            }
+        });
 
-    private JSlider slider;
-    private JLabel label;
+        quicksortBtn = new JButton("Quicksort");
+        quicksortBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectQuicksort();
+            }
+        });
 
-    public SizeSlider(ImagePanel imagePanel, ControlPanel controls) {
-        setLayout(new GridLayout(0, 1));
+        mergesortBtn = new JButton("Merge Sort");
+        mergesortBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectMergesort();
+            }
+        });
 
-        label = new JLabel();
-        label.setFont(new Font("plain", Font.BOLD, 14));
-        label.setForeground( new Color(0xffbbbbbb) );
+        bubblesortBtn = new JButton("Bubble sort");
+        bubblesortBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectBubblesort();
+            }
+        });
 
-        slider = new JSlider(0, 100, 2);
-        label.setText( " " + String.valueOf( slider.getValue()) + "% sorted ");
+        insertsortBtn = new JButton("Insertion sort");
+        insertsortBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectInsertionsort();
+            }
+        });
 
+        // Animation speed slider
+        JPanel speedSlider = new JPanel();
+        speedSlider.setLayout(new GridLayout(0, 1));
+        JLabel speedLabel = new JLabel(" Speed");
+        speedLabel.setFont(new Font("plain", Font.BOLD, 14));
+        speedLabel.setForeground( new Color(0xffbbbbbb) );
+        JSlider slider = new JSlider(0, 50, 25);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
 
-                if (controls.getStartSearchText().equals( "Pause")) // pause if running
-                    controls.pauseSearch();
-
-                int size = slider.getValue();
-                label.setText( " " + String.valueOf( slider.getValue()) + "% sorted");
             }
         });;
-
-        slider.setMinorTickSpacing(3);
+        slider.setMinorTickSpacing(1);
         // slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
+        speedSlider.add(speedLabel, BorderLayout.CENTER);
+        speedSlider.add(slider, BorderLayout.SOUTH);
+        speedSlider.setOpaque(false);
+        speedSlider.setVisible(true);
 
-        add(label, BorderLayout.CENTER);
-        add(slider, BorderLayout.SOUTH);
+        // Data set size slider
+        JPanel dataSlider = new JPanel();
+        dataSlider.setLayout(new GridLayout(0, 1));
+        JLabel sizeLabel = new JLabel(" Size of data set: " + 25 + " items");
+        sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
+        sizeLabel.setForeground( new Color(0xffbbbbbb) );
+        JSlider dslider = new JSlider(1, imagePanel.getImageWidth(), 25);
+        dslider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                sizeLabel.setText(" Size of data set: " + dslider.getValue() + " items");
+            }
+        });
+        dslider.setMinorTickSpacing(1);
+        // slider.setPaintTicks(true);
+        dslider.setSnapToTicks(true);
+        dataSlider.add(sizeLabel, BorderLayout.CENTER);
+        dataSlider.add(dslider, BorderLayout.SOUTH);
+        dataSlider.setOpaque(false);
+        dataSlider.setVisible(true);
 
-        setOpaque(false );
-        setVisible(true);
+        // % sorted slider
+        JPanel sortSlider = new JPanel();
+        sortSlider.setLayout(new GridLayout(0, 1));
+        JLabel sortLabel = new JLabel( " " + String.valueOf( slider.getValue()) + "% sorted ");
+        sortLabel.setFont(new Font("plain", Font.BOLD, 14));
+        sortLabel.setForeground( new Color(0xffbbbbbb) );
+        JSlider sslider = new JSlider(0, 100, 50);
+        sslider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (getStartSearchText().equals( "Pause")) // pause if running
+                    pauseSearch();
+
+                int size = slider.getValue();
+                sortLabel.setText( " " + String.valueOf( sslider.getValue()) + "% sorted");
+            }
+        });;
+        sslider.setMinorTickSpacing(1);
+        // slider.setPaintTicks(true);
+        sslider.setSnapToTicks(true);
+        sortSlider.add(sortLabel, BorderLayout.CENTER);
+        sortSlider.add(sslider, BorderLayout.SOUTH);
+        sortSlider.setOpaque(false);
+        sortSlider.setVisible(true);
+
+        // Font size
+        JLabel algo_label = new JLabel(" Algorithms");
+        algo_label.setFont(new Font("plain", Font.BOLD, 14));
+        startSearch.setFont(new Font("plain", Font.BOLD, 13));
+        mergesortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        quicksortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        startSearch.setFont(new Font("plain", Font.BOLD, 13));
+        bubblesortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        sortorderBtn.setFont(new Font("plain", Font.BOLD, 13));
+
+        // Test color
+        algo_label.setForeground( new Color(0xffbbbbbb) );
+        Color textColor = new Color(0, 0, 0, 250);
+        startSearch.setForeground(textColor);
+        sortorderBtn.setForeground(textColor);
+        mergesortBtn.setForeground(textColor);
+        quicksortBtn.setForeground(textColor);
+        bubblesortBtn.setForeground(textColor);
+        insertsortBtn.setForeground(textColor);
+        sortorderBtn.setForeground( new Color(0, 175, 0, 255)  );
+
+        mergesortBtn.setOpaque(false);
+        quicksortBtn.setOpaque(false);
+        startSearch.setOpaque(false);
+        bubblesortBtn.setOpaque(false);
+        insertsortBtn.setOpaque(false);
+
+        // Add components to JPanel
+        add(startSearch);
+        add(algo_label);
+        add(quicksortBtn);
+        add(mergesortBtn);
+        add(bubblesortBtn);
+        add(insertsortBtn);
+        add(speedSlider);
+        add(sortSlider);
+        add(dataSlider);
+        add(sortorderBtn);
     }
+
 }
