@@ -1,7 +1,6 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import javax.swing.*;
+import java.awt.image.*;
 
 public class ImagePanel extends JLayeredPane {
 
@@ -18,9 +17,13 @@ public class ImagePanel extends JLayeredPane {
 
         g2d.setColor( new Color(0xffbbbbbb) );                  // draw background
         g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
-       
+
+        g2d.setColor( new Color(0xffabc123) );                  // draw background
+        g2d.fillRect((int)(image.getWidth() * 0.1), (int)(image.getHeight() * 0.1), (int)(image.getWidth() * 0.8), (int)(image.getHeight() * 0.8));
+        g2d.setColor( new Color(0xff000000) );                  // draw background
+        g2d.drawRect((int)(image.getWidth() * 0.1), (int)(image.getHeight() * 0.1), (int)(image.getWidth() * 0.8), (int)(image.getHeight() * 0.8));
+
         addComponents();
-        addListeners();
         drawAll();
     }
 
@@ -35,41 +38,7 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public boolean paused() {
-        if(isPaused)
-            return false;
-        try {
-             Thread.sleep(50);
-        }
-        catch(InterruptedException e) {}
         return isPaused == false;
-    }
-
-    public void addListeners() {
-
-        addMouseListener( new MouseListener()
-        {
-            @Override
-            public void mousePressed(MouseEvent event) { }
-
-            @Override
-            public void mouseReleased(MouseEvent e) { }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {}
-
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        } );
-
-        addMouseMotionListener( new MouseMotionListener()
-        {
-            public void mouseDragged(MouseEvent event) {}
-
-            public void mouseMoved(MouseEvent event) {}
-        });
     }
 
     public int getImageWidth() {

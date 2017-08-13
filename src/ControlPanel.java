@@ -1,13 +1,12 @@
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
 
 public class ControlPanel extends JPanel {
 
     private int x, y, curr_x, curr_y;
-    private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, sortorderBtn, startSearch;
+    private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, selectionsortBtn, sortorderBtn, startSearch;
 
     public ControlPanel(ImagePanel imagePanel) {
         
@@ -15,12 +14,12 @@ public class ControlPanel extends JPanel {
         int height = (int)(imagePanel.getHeight() * .5);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
         y = curr_y = (int)(imagePanel.getHeight() * .25);
-        setBounds(x, y, width, height);
+        setBounds(curr_x, curr_y, width, height);
 
         setLayout(new GridLayout(0, 1));
         addComponents(imagePanel);
 
-        setBackground(new Color(50, 50, 50, 200));
+        setBackground(new Color(50, 50, 50, 150));
         this.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220,  32), 6));
         setVisible(true);
         setOpaque(true);
@@ -34,7 +33,7 @@ public class ControlPanel extends JPanel {
                 }
             } );
 
-       addMouseMotionListener( new MouseMotionAdapter() {
+        addMouseMotionListener( new MouseMotionAdapter() {
                 public void mouseDragged(MouseEvent event) {
                     Point p = event.getPoint();
                     curr_x += (p.getX() - x);
@@ -49,11 +48,17 @@ public class ControlPanel extends JPanel {
     }
 
     private void clearAll() {
-        Color textColor = new Color(0, 0, 0, 250);
+        Color textColor = new Color(0, 0, 0, 255);
         quicksortBtn.setForeground(textColor);
+        quicksortBtn.setFont(new Font("plain", Font.BOLD, 13));
         mergesortBtn.setForeground(textColor);
+        mergesortBtn.setFont(new Font("plain", Font.BOLD, 13));
         bubblesortBtn.setForeground(textColor);
+        bubblesortBtn.setFont(new Font("plain", Font.BOLD, 13));
         insertsortBtn.setForeground(textColor);
+        insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        selectionsortBtn.setForeground(textColor);
+        selectionsortBtn.setFont(new Font("plain", Font.BOLD, 13));
     }
 
     public void setSearchText(String s, Color c) {
@@ -61,7 +66,7 @@ public class ControlPanel extends JPanel {
         startSearch.setForeground(c);
     }
 
-    public void setMazeText(String s, Color c) {
+    public void setOrderText(String s, Color c) {
         sortorderBtn.setText(s);
         sortorderBtn.setForeground(c);
     }
@@ -85,41 +90,42 @@ public class ControlPanel extends JPanel {
         setSearchText("Start Sort",    new Color(0, 0, 0, 250));
     }
 
-    private void doSearch() {
-
-    }
+    private void doSearch() {}
 
     private void setAscendingSort() {
         sortorderBtn.setText("Ascending sort");
     }
-
     private void setDecendingSort() {
         sortorderBtn.setText("Descending sort");
     }
 
     private void selectQuicksort() {
         clearAll();
-        quicksortBtn.setForeground(  new Color(0, 175, 0, 255)  );
+        setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
     }
-
     private void selectMergesort() {
         clearAll();
-        mergesortBtn.setForeground(  new Color(0, 175, 0, 255)  );
+        setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
     }
-
     private void selectInsertionsort() {
         clearAll();
-        insertsortBtn.setForeground(  new Color(0, 175, 0, 255)  );
+        setButtonFont(insertsortBtn, new Color(0, 175, 0, 255), 15);
     }
-
     private void selectBubblesort() {
         clearAll();
-        bubblesortBtn.setForeground(  new Color(0, 175, 0, 255)  );
+        setButtonFont(bubblesortBtn, new Color(0, 175, 0, 255), 15);
+    }
+    private void selectSelectionsort() {
+        clearAll();
+        setButtonFont(selectionsortBtn, new Color(0, 175, 0, 255), 15);
+    }
+    private void setButtonFont(JButton button, Color color, int size) {
+        button.setForeground(  color  );
+        button.setFont(new Font("plain", Font.BOLD, size));
     }
 
     private void addComponents(ImagePanel imagePanel) {
         startSearch = new JButton("Start sort");
-        startSearch.setForeground(  new Color(0, 175, 0, 255)  );
         startSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,7 +137,6 @@ public class ControlPanel extends JPanel {
                     resumeSearch();
             }
         });
-
         sortorderBtn = new JButton("Ascending sort");
         sortorderBtn.addActionListener(new ActionListener() {
             @Override
@@ -142,7 +147,6 @@ public class ControlPanel extends JPanel {
                     setAscendingSort();
             }
         });
-
         quicksortBtn = new JButton("Quicksort");
         quicksortBtn.addActionListener(new ActionListener() {
             @Override
@@ -150,7 +154,6 @@ public class ControlPanel extends JPanel {
                 selectQuicksort();
             }
         });
-
         mergesortBtn = new JButton("Merge Sort");
         mergesortBtn.addActionListener(new ActionListener() {
             @Override
@@ -158,7 +161,6 @@ public class ControlPanel extends JPanel {
                 selectMergesort();
             }
         });
-
         bubblesortBtn = new JButton("Bubble sort");
         bubblesortBtn.addActionListener(new ActionListener() {
             @Override
@@ -166,12 +168,18 @@ public class ControlPanel extends JPanel {
                 selectBubblesort();
             }
         });
-
         insertsortBtn = new JButton("Insertion sort");
         insertsortBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectInsertionsort();
+            }
+        });
+        selectionsortBtn = new JButton("Selection sort");
+        selectionsortBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectSelectionsort();
             }
         });
 
@@ -248,14 +256,14 @@ public class ControlPanel extends JPanel {
         startSearch.setFont(new Font("plain", Font.BOLD, 13));
         mergesortBtn.setFont(new Font("plain", Font.BOLD, 13));
         quicksortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        startSearch.setFont(new Font("plain", Font.BOLD, 13));
         bubblesortBtn.setFont(new Font("plain", Font.BOLD, 13));
         insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        sortorderBtn.setFont(new Font("plain", Font.BOLD, 13));
+        startSearch.setFont(new Font("plain", Font.BOLD, 15));
+        sortorderBtn.setFont(new Font("plain", Font.BOLD, 15));
 
-        // Test color
+        // Text color
         algo_label.setForeground( new Color(0xffbbbbbb) );
-        Color textColor = new Color(0, 0, 0, 250);
+        Color textColor = new Color(0, 0, 0, 255);
         startSearch.setForeground(textColor);
         sortorderBtn.setForeground(textColor);
         mergesortBtn.setForeground(textColor);
@@ -277,6 +285,7 @@ public class ControlPanel extends JPanel {
         add(mergesortBtn);
         add(bubblesortBtn);
         add(insertsortBtn);
+        add(selectionsortBtn);
         add(speedSlider);
         add(sortSlider);
         add(dataSlider);
