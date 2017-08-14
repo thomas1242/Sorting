@@ -102,7 +102,6 @@ public class ImagePanel extends JLayeredPane {
 
     public void quickSort() {
         quickSort(cols, 0, cols.length - 1);
-        drawAll();
     }
 
     public void quickSort(Cell[] arr, int left, int right) {
@@ -153,7 +152,6 @@ public class ImagePanel extends JLayeredPane {
 
     public void mergeSort() {
         mergeSort(cols, 0, cols.length - 1);
-        drawAll();
     }
 
     public void mergeSort(Cell[] arr, int left, int right) {
