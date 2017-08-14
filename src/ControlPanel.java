@@ -234,17 +234,17 @@ public class ControlPanel extends JPanel {
         // Data set size slider
         JPanel dataSlider = new JPanel();
         dataSlider.setLayout(new GridLayout(0, 1));
-        JLabel sizeLabel = new JLabel(" Size of data set: " + 150 + " items");
+        JLabel sizeLabel = new JLabel(" " + 150 + " data points");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffbbbbbb) );
         int maxCells = imagePanel.getImageWidth();
         while((int)(imagePanel.getImageWidth() * 0.9) / maxCells < 1) 
             maxCells -= 5;
-        JSlider dslider = new JSlider(1, maxCells, 150);
+        JSlider dslider = new JSlider(3, maxCells, 150);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                sizeLabel.setText(" Size of data set: " + dslider.getValue() + " items");
+                sizeLabel.setText(" " + dslider.getValue() + " data points");
                 imagePanel.setDataSize( dslider.getValue() );
                 imagePanel.randomizeData();
                 SwingUtilities.invokeLater( new Runnable() {
