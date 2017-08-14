@@ -9,11 +9,10 @@ public class ImagePanel extends JLayeredPane {
     private Graphics2D g2d = null;
 
     private ControlPanel controlPanel;
-    private boolean isPaused;
-
-    Cell[] cols;
-    int numCells, height, width;  // in pixels
-    int animationSpeed;
+    private Cell[] cols;
+    private int numCells, height, width;  // in pixels
+    private int animationSpeed;
+    private boolean isSorted, isPaused;
 
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
@@ -25,16 +24,12 @@ public class ImagePanel extends JLayeredPane {
 
         addComponents();
 
-        numCells = 25;
+        numCells = 150;
         this.width = (int)(image.getWidth() * 0.8) / numCells; // initially 25 cells
         this.height = (int)(image.getHeight() * 0.8);
 
         animationSpeed = 50;
-
         randomizeData();
-
-
-
         drawAll();
     }
 
@@ -45,41 +40,33 @@ public class ImagePanel extends JLayeredPane {
 
     public void randomizeData() {
         Random rand = new Random();
-
+        isSorted = false;
         cols = new Cell[numCells];
         for(int i = 0; i < cols.length; i++) {
             int val = rand.nextInt(2 * numCells);
             cols[i] = new Cell(val, width, (int)(height * val / (2 * numCells)));
         }
-        
     }
 
     public void drawAll() {
-        
         g2d.setColor( new Color(0xffabc123) );                  // draw background
-        g2d.fillRect((int)(image.getWidth() * 0.1), (int)(image.getHeight() * 0.1), (int)(image.getWidth() * 0.8), (int)(image.getHeight() * 0.8));
+        g2d.fillRect((int)(image.getWidth() * 0.1), (int)(image.getHeight() * 0.1) + 1, (int)(image.getWidth() * 0.8), (int)(image.getHeight() * 0.8) - 1);
+
+        for(int i = cols.length - 1; i >= 0; i--) 
+            drawCell(Color.BLACK, i, cols[i]);    
+
         g2d.setColor( Color.BLACK );                  // draw background
         g2d.drawRect((int)(image.getWidth() * 0.1), (int)(image.getHeight() * 0.1), (int)(image.getWidth() * 0.8), (int)(image.getHeight() * 0.8));
-
-
-        int x = (int)(image.getWidth() * 0.1);
-        int y = (int)(image.getHeight() * 0.1);
-
-        for(int i = 0; i < cols.length; i++) 
-            drawCell(Color.BLACK, i, cols[i]);    
-        
         repaint();
     }
 
     public void drawCell(Color color, int index, Cell c) {
-
         int x = (int)(image.getWidth() * 0.1);
         int y = (int)(image.getHeight() * 0.1);
-
         x += ((int)(image.getWidth() * 0.8) - numCells * width) / 2;
 
         g2d.setColor(new Color(0xffabc123));
-        g2d.fillRect(x + index * width, y, width, height);
+        g2d.fillRect(x + index * width, y + 1, width, height - 1);
         g2d.setColor(color);
         g2d.fillRect(x + index * width, y + ((int)(image.getHeight() * 0.8) - c.pixelHeight), width, c.pixelHeight);
     }
@@ -125,10 +112,8 @@ public class ImagePanel extends JLayeredPane {
         int pivot = arr[ (left + right) / 2 ].val;
 
         while(left <= right) {
-
             while(arr[left].val < pivot)    // find leftside element greater than pivot
                 left++;
-
             while(arr[right].val > pivot)   // find rightside element less than pivot
                 right--;
 
@@ -137,14 +122,11 @@ public class ImagePanel extends JLayeredPane {
                 arr[left] = arr[right];
                 arr[right] = temp;
 
-                drawCell(Color.BLACK, left, arr[left]);
+                drawCell(Color.BLACK, left,   arr[left]);
                 drawCell(Color.BLACK, right, arr[right]);
                 repaint();
-
-                try{
-                    Thread.sleep(animationSpeed);   // small delay so plants smoothly grow
-                }
-                    catch( Exception e) {}
+                try{ Thread.sleep(animationSpeed);   }
+                catch( Exception e)                 {}
 
                 left++;
                 right--;
@@ -178,22 +160,40 @@ public class ImagePanel extends JLayeredPane {
         for(int i = 0; i < rightArr.length; i++) rightArr[i] = arr[middle + i + 1];
 
         int i = 0, j = 0, k = left;
-
         while(i < leftArr.length && j < rightArr.length) {
             if(leftArr[i].val < rightArr[j].val)  arr[k++] =  leftArr[i++];
             else                                  arr[k++] = rightArr[j++];
-
-                drawCell(Color.BLACK, k - 1, arr[k - 1]);
-                repaint();
-
-                try{
-                    Thread.sleep(animationSpeed);   // small delay so plants smoothly grow
-                }
-                    catch( Exception e) {}
+            drawCell(Color.BLACK, k - 1, arr[k - 1]);
+            repaint();
+            try{ Thread.sleep(animationSpeed);   }
+            catch( Exception e)                 {}
         }
 
         while(i < leftArr.length )   arr[k++] =  leftArr[i++];
         while(j < rightArr.length)   arr[k++] = rightArr[j++];
+    }
+
+    public void bubbleSort() {
+
+        drawAll();
+    }
+
+    public void insertSort() {
+
+        drawAll();
+    }
+
+    public void selectSort() {
+
+        drawAll();
+    }
+
+    public boolean isSorted() {
+        return this.isSorted;
+    }
+
+    public void sortStatus(boolean isSorted) {
+        this.isSorted = isSorted;
     }
 
     private static class Cell {

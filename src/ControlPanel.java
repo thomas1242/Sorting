@@ -7,6 +7,7 @@ public class ControlPanel extends JPanel {
 
     private int x, y, curr_x, curr_y;
     private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, selectionsortBtn, sortorderBtn, startSearch;
+    private boolean quickSort, mergeSort, bubbleSort, insertSort, selectSort;
     private ImagePanel imagePanel;
 
     public ControlPanel(ImagePanel imagePanel) {
@@ -61,6 +62,11 @@ public class ControlPanel extends JPanel {
         insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
         selectionsortBtn.setForeground(textColor);
         selectionsortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        quickSort = false;
+        mergeSort = false;
+        bubbleSort = false;
+        insertSort = false;
+        selectSort = false;
     }
 
     public void setSearchText(String s, Color c) {
@@ -76,6 +82,24 @@ public class ControlPanel extends JPanel {
     public void runSearch() {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
+        new Thread( new Runnable() {
+                        public void run() { 
+                            if(imagePanel.isSorted())
+                                readySearch();
+                            else if(quickSort)
+                                imagePanel.quickSort();
+                            else if (mergeSort)
+                                imagePanel.mergeSort();
+                            else if (bubbleSort)
+                                imagePanel.bubbleSort();
+                            else if (insertSort)
+                                imagePanel.insertSort();
+                            else if (selectSort)
+                                imagePanel.selectSort();
+                            readySearch();
+                            imagePanel.sortStatus(true);
+                        }
+        } ).start(); 
     }
 
     public void pauseSearch() {
@@ -89,7 +113,7 @@ public class ControlPanel extends JPanel {
     }
 
     public void readySearch() {
-        setSearchText("Start Sort",    new Color(0, 0, 0, 250));
+        setSearchText("Start sort",    new Color(0, 0, 0, 250));
     }
 
     private void doSearch() {}
@@ -104,34 +128,27 @@ public class ControlPanel extends JPanel {
     private void selectQuicksort() {
         clearAll();
         setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
-        new Thread( new Runnable() {
-                        public void run() {
-                            imagePanel.quickSort(); 
-                    }
-                } ).start();   
-        
-        // imagePanel.drawAll();
+        quickSort = true;
     }
     private void selectMergesort() {
         clearAll();
         setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
-        new Thread( new Runnable() {
-                        public void run() {
-                            imagePanel.mergeSort(); 
-                    }
-                } ).start();   
+        mergeSort = true;
     }
     private void selectInsertionsort() {
         clearAll();
         setButtonFont(insertsortBtn, new Color(0, 175, 0, 255), 15);
+        insertSort = true;
     }
     private void selectBubblesort() {
         clearAll();
         setButtonFont(bubblesortBtn, new Color(0, 175, 0, 255), 15);
+        bubbleSort = true;
     }
     private void selectSelectionsort() {
         clearAll();
         setButtonFont(selectionsortBtn, new Color(0, 175, 0, 255), 15);
+        selectSort = true;
     }
     private void setButtonFont(JButton button, Color color, int size) {
         button.setForeground(  color  );
@@ -200,14 +217,14 @@ public class ControlPanel extends JPanel {
         // Animation speed slider
         JPanel speedSlider = new JPanel();
         speedSlider.setLayout(new GridLayout(0, 1));
-        JLabel speedLabel = new JLabel(" Speed:" + 1000/100 + " operations/sec");
+        JLabel speedLabel = new JLabel(" " + 1000/20 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffbbbbbb) );
-        JSlider slider = new JSlider(2, 200, 100);
+        JSlider slider = new JSlider(5, 50, 20);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                speedLabel.setText(" Speed:" + 1000/slider.getValue() + " operations/sec");
+                speedLabel.setText(" " + 1000/slider.getValue() + " operations/sec");
                 imagePanel.setSpeed(slider.getValue());
             }
         });;
@@ -222,13 +239,13 @@ public class ControlPanel extends JPanel {
         // Data set size slider
         JPanel dataSlider = new JPanel();
         dataSlider.setLayout(new GridLayout(0, 1));
-        JLabel sizeLabel = new JLabel(" Size of data set: " + 25 + " items");
+        JLabel sizeLabel = new JLabel(" Size of data set: " + 150 + " items");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffbbbbbb) );
-        int maxCells = imagePanel.getImageWidth();
-        while((int)(imagePanel.getImageWidth() * 0.8) / maxCells < 1) 
-            maxCells -= 5;
-        JSlider dslider = new JSlider(1, maxCells, 25);
+        // int maxCells = imagePanel.getImageWidth();
+        // while((int)(imagePanel.getImageWidth() * 0.8) / maxCells < 1) 
+        //     maxCells -= 5;
+        JSlider dslider = new JSlider(1, 300, 150);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -311,7 +328,7 @@ public class ControlPanel extends JPanel {
         add(insertsortBtn);
         add(selectionsortBtn);
         add(speedSlider);
-        add(sortSlider);
+        // add(sortSlider);
         add(dataSlider);
         add(sortorderBtn);
     }
