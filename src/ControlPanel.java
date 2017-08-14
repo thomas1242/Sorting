@@ -105,11 +105,13 @@ public class ControlPanel extends JPanel {
     public void pauseSearch() {
         startSearch.setText( "Resume");
         startSearch.setForeground(  new Color(0, 175, 0, 255)  );
+        imagePanel.pause();
     }
 
     public void resumeSearch() {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
+        imagePanel.resume();
     }
 
     public void readySearch() {
@@ -220,7 +222,7 @@ public class ControlPanel extends JPanel {
         JLabel speedLabel = new JLabel(" " + 1000/20 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffbbbbbb) );
-        JSlider slider = new JSlider(5, 50, 20);
+        JSlider slider = new JSlider(1, 50, 20);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -242,10 +244,10 @@ public class ControlPanel extends JPanel {
         JLabel sizeLabel = new JLabel(" Size of data set: " + 150 + " items");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffbbbbbb) );
-        // int maxCells = imagePanel.getImageWidth();
-        // while((int)(imagePanel.getImageWidth() * 0.8) / maxCells < 1) 
-        //     maxCells -= 5;
-        JSlider dslider = new JSlider(1, 300, 150);
+        int maxCells = imagePanel.getImageWidth();
+        while((int)(imagePanel.getImageWidth() * 0.9) / maxCells < 1) 
+            maxCells -= 5;
+        JSlider dslider = new JSlider(1, maxCells, 150);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
