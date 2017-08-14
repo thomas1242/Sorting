@@ -118,15 +118,6 @@ public class ControlPanel extends JPanel {
         setSearchText("Start sort",    new Color(0, 0, 0, 250));
     }
 
-    private void doSearch() {}
-
-    private void setAscendingSort() {
-        sortorderBtn.setText("Ascending sort");
-    }
-    private void setDecendingSort() {
-        sortorderBtn.setText("Descending sort");
-    }
-
     private void selectQuicksort() {
         clearAll();
         setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
@@ -170,14 +161,16 @@ public class ControlPanel extends JPanel {
                     resumeSearch();
             }
         });
-        sortorderBtn = new JButton("Ascending sort");
+        sortorderBtn = new JButton("Randomize Data");
         sortorderBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(sortorderBtn.getText().equals("Ascending sort"))
-                    setDecendingSort();
-                else if (sortorderBtn.getText().equals( "Descending sort"))
-                    setAscendingSort();
+                imagePanel.randomizeData();
+                SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                    imagePanel.drawAll();
+                }
+                } );
             }
         });
         quicksortBtn = new JButton("Quicksort");
@@ -254,7 +247,11 @@ public class ControlPanel extends JPanel {
                 sizeLabel.setText(" Size of data set: " + dslider.getValue() + " items");
                 imagePanel.setDataSize( dslider.getValue() );
                 imagePanel.randomizeData();
-                imagePanel.drawAll();
+                SwingUtilities.invokeLater( new Runnable() {
+                public void run() {
+                    imagePanel.drawAll();
+                }
+                } );
             }
         });
         dslider.setMinorTickSpacing(1);

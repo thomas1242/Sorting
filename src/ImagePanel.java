@@ -195,7 +195,27 @@ public class ImagePanel extends JLayeredPane {
 
     public void bubbleSort() {
 
-        drawAll();
+        for(int i = 0; i < cols.length - 1;  i++) {
+            for(int j = cols.length - 1; j > i; j--) {
+                if(cols[j].val < cols[j - 1].val) {
+                    Cell temp = cols[j];   // swap the two elements
+                    cols[j] = cols[j - 1];
+                    cols[j - 1] = temp;
+                    final int x1 = j, x2 = j - 1;
+                    final Cell y1 = cols[j], y2 = cols[j - 1];
+                    SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawCell(Color.BLACK, x1, y1);
+                        drawCell(Color.BLACK, x2, y2);
+                        repaint();
+                    }
+                    } );
+                    try{ Thread.sleep(animationSpeed);   }
+                    catch( Exception e)                 {}
+                }
+            }
+        }
+
     }
 
     public void insertSort() {
