@@ -124,14 +124,6 @@ public class ImagePanel extends JLayeredPane {
 
         int pivot = arr[ (left + right) / 2 ].val;
 
-        drawCell(Color.RED, (left + right) / 2, arr[(left + right) / 2 ]); // highlight pivot
-        repaint();
-
-        try{
-             Thread.sleep(animationSpeed);   // small delay so plants smoothly grow
-        }
-        catch( Exception e) {}
-
         while(left <= right) {
 
             while(arr[left].val < pivot)    // find leftside element greater than pivot
@@ -160,6 +152,48 @@ public class ImagePanel extends JLayeredPane {
         }
 
         return left;                    // return partition index
+    }
+
+    public void mergeSort() {
+        mergeSort(cols, 0, cols.length - 1);
+        drawAll();
+    }
+
+    public void mergeSort(Cell[] arr, int left, int right) {
+        if(left >= right)
+            return;
+
+        int middle = (left + right) / 2;
+        
+        mergeSort(arr, left, middle);            // sort left half including middle element
+        mergeSort(arr, middle + 1, right);       // sort right half
+        merge(arr, left, right, middle);         // merge two sorted halfs together
+    }
+
+    public void merge(Cell[] arr, int left, int right, int middle) {
+        Cell[] leftArr  = new Cell[ middle - left + 1 ];
+        Cell[] rightArr = new Cell[ right - middle ];
+
+        for(int i = 0; i < leftArr.length;  i++) leftArr[i] = arr[left + i];
+        for(int i = 0; i < rightArr.length; i++) rightArr[i] = arr[middle + i + 1];
+
+        int i = 0, j = 0, k = left;
+
+        while(i < leftArr.length && j < rightArr.length) {
+            if(leftArr[i].val < rightArr[j].val)  arr[k++] =  leftArr[i++];
+            else                                  arr[k++] = rightArr[j++];
+
+                drawCell(Color.BLACK, k - 1, arr[k - 1]);
+                repaint();
+
+                try{
+                    Thread.sleep(animationSpeed);   // small delay so plants smoothly grow
+                }
+                    catch( Exception e) {}
+        }
+
+        while(i < leftArr.length )   arr[k++] =  leftArr[i++];
+        while(j < rightArr.length)   arr[k++] = rightArr[j++];
     }
 
     private static class Cell {

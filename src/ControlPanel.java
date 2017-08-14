@@ -115,6 +115,11 @@ public class ControlPanel extends JPanel {
     private void selectMergesort() {
         clearAll();
         setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
+        new Thread( new Runnable() {
+                        public void run() {
+                            imagePanel.mergeSort(); 
+                    }
+                } ).start();   
     }
     private void selectInsertionsort() {
         clearAll();
