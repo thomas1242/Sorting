@@ -7,6 +7,7 @@ public class ControlPanel extends JPanel {
 
     private int x, y, curr_x, curr_y;
     private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, selectionsortBtn, sortorderBtn, startSearch;
+    private ImagePanel imagePanel;
 
     public ControlPanel(ImagePanel imagePanel) {
         
@@ -14,6 +15,7 @@ public class ControlPanel extends JPanel {
         int height = (int)(imagePanel.getHeight() * .5);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
         y = curr_y = (int)(imagePanel.getHeight() * .25);
+        this.imagePanel = imagePanel;
         setBounds(curr_x, curr_y, width, height);
 
         setLayout(new GridLayout(0, 1));
@@ -102,6 +104,13 @@ public class ControlPanel extends JPanel {
     private void selectQuicksort() {
         clearAll();
         setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
+        new Thread( new Runnable() {
+                        public void run() {
+                            imagePanel.quickSort(); 
+                    }
+                } ).start();   
+        
+        // imagePanel.drawAll();
     }
     private void selectMergesort() {
         clearAll();
@@ -186,18 +195,19 @@ public class ControlPanel extends JPanel {
         // Animation speed slider
         JPanel speedSlider = new JPanel();
         speedSlider.setLayout(new GridLayout(0, 1));
-        JLabel speedLabel = new JLabel(" Speed");
+        JLabel speedLabel = new JLabel(" Speed:" + 1000/100 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffbbbbbb) );
-        JSlider slider = new JSlider(0, 50, 25);
+        JSlider slider = new JSlider(2, 200, 100);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-
+                speedLabel.setText(" Speed:" + 1000/slider.getValue() + " operations/sec");
+                imagePanel.setSpeed(slider.getValue());
             }
         });;
         slider.setMinorTickSpacing(1);
-        // slider.setPaintTicks(true);
+        slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
         speedSlider.add(speedLabel, BorderLayout.CENTER);
         speedSlider.add(slider, BorderLayout.SOUTH);
@@ -210,15 +220,21 @@ public class ControlPanel extends JPanel {
         JLabel sizeLabel = new JLabel(" Size of data set: " + 25 + " items");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffbbbbbb) );
-        JSlider dslider = new JSlider(1, imagePanel.getImageWidth(), 25);
+        int maxCells = imagePanel.getImageWidth();
+        while((int)(imagePanel.getImageWidth() * 0.8) / maxCells < 1) 
+            maxCells -= 5;
+        JSlider dslider = new JSlider(1, maxCells, 25);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 sizeLabel.setText(" Size of data set: " + dslider.getValue() + " items");
+                imagePanel.setDataSize( dslider.getValue() );
+                imagePanel.randomizeData();
+                imagePanel.drawAll();
             }
         });
         dslider.setMinorTickSpacing(1);
-        // slider.setPaintTicks(true);
+        dslider.setPaintTicks(true);
         dslider.setSnapToTicks(true);
         dataSlider.add(sizeLabel, BorderLayout.CENTER);
         dataSlider.add(dslider, BorderLayout.SOUTH);
@@ -258,6 +274,7 @@ public class ControlPanel extends JPanel {
         quicksortBtn.setFont(new Font("plain", Font.BOLD, 13));
         bubblesortBtn.setFont(new Font("plain", Font.BOLD, 13));
         insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        selectionsortBtn.setFont(new Font("plain", Font.BOLD, 13));
         startSearch.setFont(new Font("plain", Font.BOLD, 15));
         sortorderBtn.setFont(new Font("plain", Font.BOLD, 15));
 
@@ -270,6 +287,7 @@ public class ControlPanel extends JPanel {
         quicksortBtn.setForeground(textColor);
         bubblesortBtn.setForeground(textColor);
         insertsortBtn.setForeground(textColor);
+        selectionsortBtn.setForeground(textColor);
         sortorderBtn.setForeground( new Color(0, 175, 0, 255)  );
 
         mergesortBtn.setOpaque(false);
@@ -277,6 +295,7 @@ public class ControlPanel extends JPanel {
         startSearch.setOpaque(false);
         bubblesortBtn.setOpaque(false);
         insertsortBtn.setOpaque(false);
+        selectionsortBtn.setOpaque(false);
 
         // Add components to JPanel
         add(startSearch);
