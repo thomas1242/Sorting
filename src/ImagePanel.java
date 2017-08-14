@@ -225,7 +225,34 @@ public class ImagePanel extends JLayeredPane {
 
     public void selectSort() {
 
-        drawAll();
+        int index = 0;
+        for(int i = 0; i < cols.length;  i++) {
+            int j, min = Integer.MAX_VALUE;
+            for(j = i; j < cols.length;  j++) { // find min
+                if(cols[j].val < min) {
+                    index = j;
+                    min = cols[j].val;
+                }
+            }
+
+                    Cell temp = cols[i];   // swap the two elements
+                    cols[i] = cols[index];
+                    cols[index] = temp;
+
+                    final int x1 = index, x2 = i;
+                    final Cell y1 = cols[index], y2 = cols[i];
+                    SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawCell(Color.BLACK, x1, y1);
+                        drawCell(Color.BLACK, x2, y2);
+                        repaint();
+                    }
+                    } );
+                    try{ Thread.sleep(animationSpeed);   }
+                    catch( Exception e)                 {}
+
+        }
+
     }
 
     public boolean isSorted() {
