@@ -320,6 +320,7 @@ public class ControlPanel extends JPanel {
 
         // Add components to JPanel
         add(startSearch);
+        add(sortorderBtn);
         add(algo_label);
         add(quicksortBtn);
         add(mergesortBtn);
@@ -329,7 +330,7 @@ public class ControlPanel extends JPanel {
         add(speedSlider);
         // add(sortSlider);
         add(dataSlider);
-        add(sortorderBtn);
+        selectMergesort();
     }
 
 }
