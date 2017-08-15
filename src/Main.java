@@ -3,6 +3,9 @@ import java.awt.*;
 
 public class Main {
 
+    private static final int WIDTH  = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();   // full screen
+    private static final int HEIGHT = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+
     public static void main( String[] args ) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -12,9 +15,6 @@ public class Main {
     }
 
     private static void createAndShowGUI() {
-        int WIDTH =   (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();   // full screen
-        int HEIGHT =  (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-
         JFrame frame = new JFrame();
         frame.setSize(WIDTH, HEIGHT);
         frame.add(new ImagePanel(WIDTH, HEIGHT), BorderLayout.CENTER);

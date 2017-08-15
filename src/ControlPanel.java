@@ -47,39 +47,6 @@ public class ControlPanel extends JPanel {
         } );
     }
 
-    private String getStartSearchText() {
-        return startSearch.getText();
-    }
-
-    private void clearAll() {
-        Color textColor = new Color(0, 0, 0, 255);
-        quicksortBtn.setForeground(textColor);
-        quicksortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        mergesortBtn.setForeground(textColor);
-        mergesortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        bubblesortBtn.setForeground(textColor);
-        bubblesortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        insertsortBtn.setForeground(textColor);
-        insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        selectionsortBtn.setForeground(textColor);
-        selectionsortBtn.setFont(new Font("plain", Font.BOLD, 13));
-        quickSort = false;
-        mergeSort = false;
-        bubbleSort = false;
-        insertSort = false;
-        selectSort = false;
-    }
-
-    public void setSearchText(String s, Color c) {
-        startSearch.setText(s);
-        startSearch.setForeground(c);
-    }
-
-    public void setOrderText(String s, Color c) {
-        sortorderBtn.setText(s);
-        sortorderBtn.setForeground(c);
-    }
-
     public void runSearch() {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
@@ -96,7 +63,7 @@ public class ControlPanel extends JPanel {
                         imagePanel.insertSort();
                     else if (selectSort)
                         imagePanel.selectSort();
-                    setSearchText("Start sort",    new Color(0, 0, 0, 250));
+                    setSearchText("Start sort", new Color(0, 0, 0, 250));
                 }
             } ).start(); 
     }
@@ -141,6 +108,30 @@ public class ControlPanel extends JPanel {
     private void setButtonFont(JButton button, Color color, int size) {
         button.setForeground(  color  );
         button.setFont(new Font("plain", Font.BOLD, size));
+    }
+
+    private void clearAll() {
+        Color textColor = new Color(0, 0, 0, 255);
+        quickSort = false;
+        quicksortBtn.setForeground(textColor);
+        quicksortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        mergeSort = false;
+        mergesortBtn.setForeground(textColor);
+        mergesortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        bubbleSort = false;
+        bubblesortBtn.setForeground(textColor);
+        bubblesortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        insertSort = false;
+        insertsortBtn.setForeground(textColor);
+        insertsortBtn.setFont(new Font("plain", Font.BOLD, 13));
+        selectSort = false;
+        selectionsortBtn.setForeground(textColor);
+        selectionsortBtn.setFont(new Font("plain", Font.BOLD, 13));
+    }
+
+    public void setSearchText(String s, Color c) {
+        startSearch.setText(s);
+        startSearch.setForeground(c);
     }
 
     private void addComponents(ImagePanel imagePanel) {
@@ -226,13 +217,13 @@ public class ControlPanel extends JPanel {
         // Data set size slider
         JPanel dataSlider = new JPanel();
         dataSlider.setLayout(new GridLayout(0, 1));
-        JLabel sizeLabel = new JLabel(" " + 100 + " data points");
+        JLabel sizeLabel = new JLabel(" " + 50 + " data points");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffdddddd) );
         int maxCells = imagePanel.getImageWidth();
         while(((int)(imagePanel.getImageWidth() * 0.9)) / maxCells < 2 || maxCells % 10 != 0) 
             maxCells -= 10;
-        JSlider dslider = new JSlider(5, maxCells, 100);
+        JSlider dslider = new JSlider(1, maxCells, 50);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -263,8 +254,8 @@ public class ControlPanel extends JPanel {
         sortorderBtn.setFont(new Font("plain", Font.BOLD, 15));
 
         // Text color
-        algo_label.setForeground( new Color(0xffdddddd) );
         Color textColor = new Color(0, 0, 0, 255);
+        algo_label.setForeground( new Color(0xffdddddd) );
         startSearch.setForeground(textColor);
         sortorderBtn.setForeground(textColor);
         mergesortBtn.setForeground(textColor);
