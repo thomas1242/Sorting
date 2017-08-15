@@ -30,7 +30,11 @@ public class ImagePanel extends JLayeredPane {
 
         animationSpeed = 50;
         randomizeData();
-        drawAll();
+        SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawAll();
+                    }
+                    });
     }
 
     public void addComponents() {
@@ -43,8 +47,8 @@ public class ImagePanel extends JLayeredPane {
         isSorted = false;
         cols = new Cell[numCells];
         for(int i = 0; i < cols.length; i++) {
-            int val = rand.nextInt(2 * numCells);
-            cols[i] = new Cell(val, width, (int)(height * val / (2 * numCells)));
+            int val = rand.nextInt(2 * numCells + 1);
+            cols[i] = new Cell(val, width, (int)(height * val / (2 * numCells + 1)));
         }
     }
 
@@ -111,7 +115,11 @@ public class ImagePanel extends JLayeredPane {
 
     public void quickSort() {
         quickSort(cols, 0, cols.length - 1);
-        drawAll();
+        SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawAll();
+                    }
+                    });
     }
 
     public void quickSort(Cell[] arr, int left, int right) {
@@ -129,6 +137,7 @@ public class ImagePanel extends JLayeredPane {
         int pivot = arr[ (left + right) / 2 ].val;
 
         while(left <= right) {
+
             while(arr[left].val < pivot)    // find leftside element greater than pivot
                 left++;
             while(arr[right].val > pivot)   // find rightside element less than pivot
@@ -162,7 +171,11 @@ public class ImagePanel extends JLayeredPane {
 
     public void mergeSort() {
         mergeSort(cols, 0, cols.length - 1);
-        drawAll();
+        SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawAll();
+                    }
+                    });
     }
 
     public void mergeSort(Cell[] arr, int left, int right) {
@@ -209,6 +222,16 @@ public class ImagePanel extends JLayeredPane {
         for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = cols.length - 1; j > i; j--) {
                 if(cols[j].val < cols[j - 1].val) {
+                    final int x11 = j;
+                    final Cell y11 = cols[j];
+                    SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawCell(Color.RED, x11, y11);
+                        repaint();
+                    }
+                    } );
+                    try{ Thread.sleep(animationSpeed);   }
+                    catch( Exception e)                 {}
                     Cell temp = cols[j];   // swap the two elements
                     cols[j] = cols[j - 1];
                     cols[j - 1] = temp;
@@ -221,13 +244,15 @@ public class ImagePanel extends JLayeredPane {
                         repaint();
                     }
                     } );
-                    try{ Thread.sleep(animationSpeed);   }
-                    catch( Exception e)                 {}
                 }
             }
         }
 
-        drawAll();
+        SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawAll();
+                    }
+                    });
     }
 
     public void insertSort() {
@@ -242,7 +267,6 @@ public class ImagePanel extends JLayeredPane {
                         drawCell(Color.RED, x11, y11);
                         repaint();
                     }
-
                     } );
                     try{ Thread.sleep(animationSpeed);   }
                     catch( Exception e)                 {}
@@ -259,13 +283,15 @@ public class ImagePanel extends JLayeredPane {
                         repaint();
                     }
                     } );
-                    try{ Thread.sleep(animationSpeed);   }
-                    catch( Exception e)                 {}
                 }
             }
         }
 
-        drawAll();
+        SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawAll();
+                    }
+                    });
     }
 
     public void selectSort() {
@@ -275,17 +301,6 @@ public class ImagePanel extends JLayeredPane {
             int j, min = Integer.MAX_VALUE;
             for(j = i; j < cols.length;  j++) { // find min
                 if(cols[j].val < min) {
-
-                    final int x11 = index;
-                    final Cell y11 = cols[index];
-                    SwingUtilities.invokeLater( new Runnable() {
-                    public void run() {
-                        drawCell(Color.BLACK, x11, y11);
-                        repaint();
-                    }
-
-                    } );
-
                     index = j;
                     min = cols[j].val;
                 }
@@ -298,7 +313,6 @@ public class ImagePanel extends JLayeredPane {
                         drawCell(Color.RED, x11, y11);
                         repaint();
                     }
-
                     } );
                     try{ Thread.sleep(animationSpeed * 2);   }
                     catch( Exception e)                 {}
@@ -306,6 +320,7 @@ public class ImagePanel extends JLayeredPane {
                     Cell temp = cols[i];   // swap the two elements
                     cols[i] = cols[index];
                     cols[index] = temp;
+
 
                     final int x1 = index, x2 = i;
                     final Cell y1 = cols[index], y2 = cols[i];
@@ -316,12 +331,13 @@ public class ImagePanel extends JLayeredPane {
                         repaint();
                     }
                     } );
-                    try{ Thread.sleep(animationSpeed);   }
-                    catch( Exception e)                 {}
-
         }
 
-        drawAll();
+                SwingUtilities.invokeLater( new Runnable() {
+                    public void run() {
+                        drawAll();
+                    }
+                    } );
     }
 
     public boolean isSorted() {

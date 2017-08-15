@@ -215,7 +215,7 @@ public class ControlPanel extends JPanel {
         JLabel speedLabel = new JLabel(" " + 1000/20 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffbbbbbb) );
-        JSlider slider = new JSlider(1, 50, 20);
+        JSlider slider = new JSlider(1, 200, 20);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
