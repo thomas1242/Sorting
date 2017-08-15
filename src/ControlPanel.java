@@ -7,13 +7,13 @@ public class ControlPanel extends JPanel {
 
     private int x, y, curr_x, curr_y;
     private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, selectionsortBtn, sortorderBtn, startSearch;
-    private boolean quickSort, mergeSort, bubbleSort, insertSort, selectSort;
+    private boolean quickSort, mergeSort, bubbleSort, insertSort, selectSort; 
     private ImagePanel imagePanel;
 
     public ControlPanel(ImagePanel imagePanel) {
         
         int width = (int)(imagePanel.getWidth() * .175);
-        int height = (int)(imagePanel.getHeight() * .5);
+        int height = (int)(imagePanel.getHeight() * .45);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
         y = curr_y = (int)(imagePanel.getHeight() * .25);
         this.imagePanel = imagePanel;
@@ -104,13 +104,13 @@ public class ControlPanel extends JPanel {
     public void pauseSearch() {
         startSearch.setText( "Resume");
         startSearch.setForeground(  new Color(0, 175, 0, 255)  );
-        imagePanel.pause();
+        // imagePanel.pause();
     }
 
     public void resumeSearch() {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
-        imagePanel.resume();
+        // imagePanel.resume();
     }
 
     public void readySearch() {
@@ -234,8 +234,8 @@ public class ControlPanel extends JPanel {
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffdddddd) );
         int maxCells = imagePanel.getImageWidth();
-        while(((int)(imagePanel.getImageWidth() * 0.9)) / maxCells < 1) 
-            maxCells -= 5;
+        while(((int)(imagePanel.getImageWidth() * 0.9)) / maxCells < 2) 
+            maxCells -= 10;
         while(maxCells % 10 != 0)
             maxCells--;
         JSlider dslider = new JSlider(5, maxCells, 100);
