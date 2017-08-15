@@ -16,39 +16,38 @@ public class ControlPanel extends JPanel {
         int height = (int)(imagePanel.getHeight() * .45);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
         y = curr_y = (int)(imagePanel.getHeight() * .25);
-        this.imagePanel = imagePanel;
+
         setBounds(curr_x, curr_y, width, height);
-
         setLayout(new GridLayout(0, 1));
-        addComponents(imagePanel);
-
         setBackground(new Color(50, 50, 50, 150));
-        // this.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220,  32), 6));
+        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50,  150), 6));
         setVisible(true);
         setOpaque(true);
 
-        addMouseListener( new MouseAdapter() {
-                public void mousePressed( MouseEvent event ) {
-                    if(event.getButton() == MouseEvent.BUTTON1) {
-                        x = (int)event.getPoint().getX();
-                        y = (int)event.getPoint().getY();
-                        imagePanel.repaint();
-                    }
-                }
-            } );
+        this.imagePanel = imagePanel;
+        addComponents(imagePanel);
 
-        addMouseMotionListener( new MouseMotionAdapter() {
-                public void mouseDragged(MouseEvent event) {
-                    Point p = event.getPoint();
-                    curr_x += (p.getX() - x);
-                    curr_y += (p.getY() - y);
-                    setBounds(curr_x, curr_y, width, height);
+        addMouseListener( new MouseAdapter() {
+            public void mousePressed( MouseEvent event ) {
+                if(event.getButton() == MouseEvent.BUTTON1) {
+                    x = (int)event.getPoint().getX();
+                    y = (int)event.getPoint().getY();
                     imagePanel.repaint();
                 }
-            } );
+            }
+        } );
+
+        addMouseMotionListener( new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent event) {
+                curr_x += (event.getPoint().getX() - x);
+                curr_y += (event.getPoint().getY() - y);
+                setBounds(curr_x, curr_y, width, height);
+                imagePanel.repaint();
+            }
+        } );
     }
 
-    public String getStartSearchText() {
+    private String getStartSearchText() {
         return startSearch.getText();
     }
 
@@ -84,21 +83,22 @@ public class ControlPanel extends JPanel {
     public void runSearch() {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
-        new Thread( new Runnable() {
-                        public void run() { 
-                            if(quickSort)
-                                imagePanel.quickSort();
-                            else if (mergeSort)
-                                imagePanel.mergeSort();
-                            else if (bubbleSort)
-                                imagePanel.bubbleSort();
-                            else if (insertSort)
-                                imagePanel.insertSort();
-                            else if (selectSort)
-                                imagePanel.selectSort();
-                            readySearch();
-                        }
-        } ).start(); 
+        new Thread( 
+            new Runnable() {
+                public void run() { 
+                    if(quickSort)
+                        imagePanel.quickSort();
+                    else if (mergeSort)
+                        imagePanel.mergeSort();
+                    else if (bubbleSort)
+                        imagePanel.bubbleSort();
+                    else if (insertSort)
+                        imagePanel.insertSort();
+                    else if (selectSort)
+                        imagePanel.selectSort();
+                    setSearchText("Start sort",    new Color(0, 0, 0, 250));
+                }
+            } ).start(); 
     }
 
     public void pauseSearch() {
@@ -111,10 +111,6 @@ public class ControlPanel extends JPanel {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
         // imagePanel.resume();
-    }
-
-    public void readySearch() {
-        setSearchText("Start sort",    new Color(0, 0, 0, 250));
     }
 
     private void selectQuicksort() {
@@ -234,10 +230,8 @@ public class ControlPanel extends JPanel {
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffdddddd) );
         int maxCells = imagePanel.getImageWidth();
-        while(((int)(imagePanel.getImageWidth() * 0.9)) / maxCells < 2) 
+        while(((int)(imagePanel.getImageWidth() * 0.9)) / maxCells < 2 || maxCells % 10 != 0) 
             maxCells -= 10;
-        while(maxCells % 10 != 0)
-            maxCells--;
         JSlider dslider = new JSlider(5, maxCells, 100);
         dslider.addChangeListener(new ChangeListener() {
             @Override
@@ -255,31 +249,6 @@ public class ControlPanel extends JPanel {
         dataSlider.add(dslider, BorderLayout.SOUTH);
         dataSlider.setOpaque(false);
         dataSlider.setVisible(true);
-
-        // % sorted slider
-        JPanel sortSlider = new JPanel();
-        sortSlider.setLayout(new GridLayout(0, 1));
-        JLabel sortLabel = new JLabel( " " + String.valueOf( slider.getValue()) + "% sorted ");
-        sortLabel.setFont(new Font("plain", Font.BOLD, 14));
-        sortLabel.setForeground( new Color(0xffdddddd) );
-        JSlider sslider = new JSlider(0, 100, 50);
-        sslider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (getStartSearchText().equals( "Pause")) // pause if running
-                    pauseSearch();
-
-                int size = slider.getValue();
-                sortLabel.setText( " " + String.valueOf( sslider.getValue()) + "% sorted");
-            }
-        });;
-        sslider.setMinorTickSpacing(1);
-        // slider.setPaintTicks(true);
-        sslider.setSnapToTicks(true);
-        sortSlider.add(sortLabel, BorderLayout.CENTER);
-        sortSlider.add(sslider, BorderLayout.SOUTH);
-        sortSlider.setOpaque(false);
-        sortSlider.setVisible(true);
 
         // Font size
         JLabel algo_label = new JLabel(" Algorithms");
@@ -304,7 +273,6 @@ public class ControlPanel extends JPanel {
         insertsortBtn.setForeground(textColor);
         selectionsortBtn.setForeground(textColor);
         sortorderBtn.setForeground( new Color(0, 175, 0, 255)  );
-
         mergesortBtn.setOpaque(false);
         quicksortBtn.setOpaque(false);
         startSearch.setOpaque(false);
@@ -322,7 +290,6 @@ public class ControlPanel extends JPanel {
         add(insertsortBtn);
         add(selectionsortBtn);
         add(speedSlider);
-        // add(sortSlider);
         add(dataSlider);
         selectMergesort();
     }
