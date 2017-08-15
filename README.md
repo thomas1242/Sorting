@@ -17,3 +17,5 @@ java -cp Sorting/src Main                           # run the program
 * Choose size of data set.<br>
 * Select an algorithm.<br>
 * Click start sort.<br>
+
+![Merge sort](mergeSort.gif)
