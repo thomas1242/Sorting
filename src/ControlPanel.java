@@ -97,7 +97,6 @@ public class ControlPanel extends JPanel {
                             else if (selectSort)
                                 imagePanel.selectSort();
                             readySearch();
-                            imagePanel.sortStatus(true);
                         }
         } ).start(); 
     }
