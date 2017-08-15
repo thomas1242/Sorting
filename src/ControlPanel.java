@@ -32,6 +32,7 @@ public class ControlPanel extends JPanel {
                     if(event.getButton() == MouseEvent.BUTTON1) {
                         x = (int)event.getPoint().getX();
                         y = (int)event.getPoint().getY();
+                        imagePanel.repaint();
                     }
                 }
             } );
@@ -42,6 +43,7 @@ public class ControlPanel extends JPanel {
                     curr_x += (p.getX() - x);
                     curr_y += (p.getY() - y);
                     setBounds(curr_x, curr_y, width, height);
+                    imagePanel.repaint();
                 }
             } );
     }

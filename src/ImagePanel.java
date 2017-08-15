@@ -35,6 +35,8 @@ public class ImagePanel extends JLayeredPane {
                         drawAll();
                     }
                     });
+
+        setFocusable(false);
     }
 
     public void addComponents() {
