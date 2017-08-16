@@ -19,7 +19,14 @@ public class ImagePanel extends JLayeredPane {
         setBounds(0, 0, width, height);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
-        add(new ControlPanel(this), new Integer(3));
+        
+        ControlPanel controlPanel = new ControlPanel(this);
+        ColorChooser colorChooser = new ColorChooser(this);
+        controlPanel.setColorChooser(colorChooser);
+        colorChooser.setControlPanel(controlPanel);
+
+        add(controlPanel, new Integer(3));
+        add(colorChooser, new Integer(4));
 
         animationSpeed = 30;
         numCells = (int)(image.getWidth() * 0.9) / 12;
@@ -28,6 +35,7 @@ public class ImagePanel extends JLayeredPane {
 
         randomizeData();
         drawAll();
+        repaint();
     }
 
     protected void paintComponent(Graphics g) {

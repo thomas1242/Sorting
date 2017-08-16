@@ -5,23 +5,23 @@ import javax.swing.event.*;
 
 public class ControlPanel extends JPanel {
 
-    private int x, y, curr_x, curr_y;
+    public int x, y, curr_x, curr_y, width, height;
     private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, selectionsortBtn, sortorderBtn, startSearch;
     private boolean quickSort, mergeSort, bubbleSort, insertSort, selectSort; 
     private ImagePanel imagePanel;
+    private ColorChooser colorChooser;
 
     public ControlPanel(ImagePanel imagePanel) {
         
-        int width = (int)(imagePanel.getWidth() * .175);
-        int height = (int)(imagePanel.getHeight() * .45);
+        width = (int)(imagePanel.getWidth() * .175);
+        height = (int)(imagePanel.getHeight() * .45);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
-        y = curr_y = (int)(imagePanel.getHeight() * .25);
+        y = curr_y = (int)(imagePanel.getHeight() * .20);
 
         setBounds(curr_x, curr_y, width, height);
         setLayout(new GridLayout(0, 1));
         setBackground(new Color(50, 50, 50, 140));
         setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 70), 7));
-        // setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         setVisible(true);
         setOpaque(true);
 
@@ -40,9 +40,16 @@ public class ControlPanel extends JPanel {
 
         addMouseMotionListener( new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent event) {
-                curr_x += (event.getPoint().getX() - x);
-                curr_y += (event.getPoint().getY() - y);
+                int x_offset = (int)event.getPoint().getX() - x;
+                int y_offset = (int)event.getPoint().getY() - y;
+                curr_x += (x_offset);
+                curr_y += (y_offset);
                 setBounds(curr_x, curr_y, width, height);
+
+                colorChooser.curr_x += (x_offset);
+                colorChooser.curr_y += (y_offset);
+                colorChooser.setBounds(colorChooser.curr_x, colorChooser.curr_y, colorChooser.width, colorChooser.height);
+
                 imagePanel.repaint();
             }
         } );
@@ -289,6 +296,10 @@ public class ControlPanel extends JPanel {
         add(speedSlider);
         add(dataSlider);
         selectMergesort();
+    }
+
+    public void setColorChooser(ColorChooser colorChooser) {
+        this.colorChooser = colorChooser;
     }
 
 }
