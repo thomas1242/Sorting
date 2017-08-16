@@ -53,8 +53,10 @@ public class ImagePanel extends JLayeredPane {
                 right--;
             if(left <= right) {         
                 swap(left, right);
-                drawCell(Color.BLACK, left,   arr[left], animationSpeed);
-                drawCell(Color.BLACK, right, arr[right], animationSpeed);
+                drawCell(Color.RED, left,   arr[left], animationSpeed);
+                drawCell(Color.RED, right, arr[right], animationSpeed);
+                drawCell(Color.BLACK, right, arr[right], 0);
+                drawCell(Color.BLACK, left,   arr[left], 0);
                 left++;
                 right--;
             }
@@ -88,12 +90,21 @@ public class ImagePanel extends JLayeredPane {
         while(i < leftArr.length && j < rightArr.length) {
             if(leftArr[i].val < rightArr[j].val)  arr[k++] =  leftArr[i++];
             else                                  arr[k++] = rightArr[j++];
-            drawCell(Color.BLACK, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(Color.BLACK, k - 1, arr[k - 1], 0); 
         }
 
         drawCell(Color.BLACK, k, arr[k], 1);
-        while(i < leftArr.length )   arr[k++] =  leftArr[i++];
-        while(j < rightArr.length)   arr[k++] = rightArr[j++];
+        while(i < leftArr.length ) {
+            arr[k++] =  leftArr[i++];
+            drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(Color.BLACK, k - 1, arr[k - 1], 0); 
+        }
+        while(j < rightArr.length) {  
+            arr[k++] = rightArr[j++];
+            drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(Color.BLACK, k - 1, arr[k - 1], 0); 
+        }
     }
 
     public void bubbleSort() {
