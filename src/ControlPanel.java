@@ -195,10 +195,10 @@ public class ControlPanel extends JPanel {
         // Animation speed slider
         JPanel speedSlider = new JPanel();
         speedSlider.setLayout(new GridLayout(0, 1));
-        JLabel speedLabel = new JLabel(" " + 1000/20 + " operations/sec");
+        JLabel speedLabel = new JLabel(" " + 1000/30 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffdddddd) );
-        JSlider slider = new JSlider(1, 200, 20);
+        JSlider slider = new JSlider(1, 200, 30);
         slider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -224,7 +224,11 @@ public class ControlPanel extends JPanel {
         while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 10 != 0) {
             minWidth--;
         }
-        JSlider dslider = new JSlider(1, minWidth, (minWidth + 1) / 2);
+        imagePanel.setDataSize( 12 );
+        imagePanel.randomizeData();
+        imagePanel.drawAll();
+        sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
+        JSlider dslider = new JSlider(1, minWidth, minWidth - 10);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -234,7 +238,6 @@ public class ControlPanel extends JPanel {
                 imagePanel.drawAll();
             }
         });
-
         dslider.setMinorTickSpacing(1);
         // dslider.setPaintTicks(true);
         dslider.setSnapToTicks(true);

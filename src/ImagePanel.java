@@ -21,9 +21,9 @@ public class ImagePanel extends JLayeredPane {
         g2d = (Graphics2D)image.getGraphics();
         add(new ControlPanel(this), new Integer(3));
 
-        animationSpeed = 50;
-        numCells = (int)(image.getWidth() * 0.9) / 75;
-        this.width = 75; // width of column 
+        animationSpeed = 30;
+        numCells = (int)(image.getWidth() * 0.9) / 12;
+        this.width = 12; // width of column 
         this.height = (int)(image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    // column height
 
         randomizeData();
@@ -55,7 +55,7 @@ public class ImagePanel extends JLayeredPane {
                 right--;
             if(left <= right) {         
                 swap(left, right);
-                drawCell(highlight, left,   arr[left], animationSpeed);
+                drawCell(highlight, left,   arr[left], 0);
                 drawCell(highlight, right, arr[right], animationSpeed);
                 drawCell(arr[right].color, right, arr[right], 0);
                 drawCell(arr[left].color, left,   arr[left], 0);
@@ -92,6 +92,7 @@ public class ImagePanel extends JLayeredPane {
         while(i < leftArr.length && j < rightArr.length) {
             if(leftArr[i].val < rightArr[j].val)  arr[k++] =  leftArr[i++];
             else                                  arr[k++] = rightArr[j++];
+           
             drawCell(new Color(255, 0, 0, 200), k - 1, arr[k - 1], animationSpeed); 
             drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
@@ -276,7 +277,7 @@ public class ImagePanel extends JLayeredPane {
         cols = new Cell[numCells];
         for(int i = 0; i < cols.length; i++) {
             int val = rand.nextInt(2 * numCells + 1);
-            cols[i] = new Cell(val, width, (int)(height * val / (2 * numCells + 1)));
+            cols[i] = new Cell(val, (int)(height * val / (2 * numCells + 1)));
         }
 
         Color[] colors = getColors( 0xffcccccc, 0x0fFFD700, numCells );
@@ -326,19 +327,16 @@ public class ImagePanel extends JLayeredPane {
     }    
 
     public int getNumCells() {
-        return cols.length;
+        return numCells;
     }
 
     private static class Cell {
         int val;
-        int pixelWidth, pixelHeight;
-        Color color;
-        int index;
-        public Cell(int val, int pixelWidth, int pixelHeight) {
+        int pixelHeight;
+        Color color = Color.BLACK;
+        public Cell(int val, int pixelHeight) {
             this.val = val;
-            this.pixelWidth = pixelWidth;
             this.pixelHeight = pixelHeight;
-            color = Color.BLACK;
         }
     } 
 }
