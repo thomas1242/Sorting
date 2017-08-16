@@ -19,8 +19,9 @@ public class ControlPanel extends JPanel {
 
         setBounds(curr_x, curr_y, width, height);
         setLayout(new GridLayout(0, 1));
-        setBackground(new Color(50, 50, 50, 150));
-        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50,  150), 6));
+        setBackground(new Color(50, 50, 50, 140));
+        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 70), 7));
+        // setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         setVisible(true);
         setOpaque(true);
 
@@ -47,7 +48,7 @@ public class ControlPanel extends JPanel {
         } );
     }
 
-    public void runSearch() {
+    private void runSearch() {
         startSearch.setText( "Pause");
         startSearch.setForeground(  Color.RED  );
         new Thread( 
@@ -239,7 +240,7 @@ public class ControlPanel extends JPanel {
             }
         });
         dslider.setMinorTickSpacing(1);
-        // dslider.setPaintTicks(true);
+        dslider.setPaintTicks(true);
         dslider.setSnapToTicks(true);
         dataSlider.add(sizeLabel, BorderLayout.CENTER);
         dataSlider.add(dslider, BorderLayout.SOUTH);

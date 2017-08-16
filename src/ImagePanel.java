@@ -148,17 +148,18 @@ public class ImagePanel extends JLayeredPane {
             int min = Integer.MAX_VALUE;
             for(int j = i; j < cols.length;  j++) { // find min
                 if(cols[j].val < min) {
+                    drawCell(cols[index].color, index, cols[index], 0);
                     index = j;
                     min = cols[j].val;
                 }
                 drawCell(highlight, j, cols[j], animationSpeed);
+                drawCell(highlight, index, cols[index], 0);
                 drawCell(cols[j].color, j, cols[j], 0);
             }
             swap(i, index);
             drawCell(cols[index].color, index, cols[index], 0);
             drawCell(cols[i].color, i, cols[i], 0);
         }
-
     }
 
     private void swap(int index1, int index2) {
