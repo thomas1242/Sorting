@@ -13,6 +13,8 @@ public class ImagePanel extends JLayeredPane {
     private int height, width;  // in pixels
     private int animationSpeed;
 
+    private Color highlight = new Color(255, 0, 0, 200);
+
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -20,9 +22,9 @@ public class ImagePanel extends JLayeredPane {
         add(new ControlPanel(this), new Integer(3));
 
         animationSpeed = 50;
-        numCells = 100;
-        this.width = (int)(image.getWidth() * 0.9) / numCells; 
-        this.height = (int)(image.getHeight() - 2 * (int)(image.getWidth() * 0.05));
+        numCells = (int)(image.getWidth() * 0.9) / 75;
+        this.width = 75; // width of column 
+        this.height = (int)(image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    // column height
 
         randomizeData();
         drawAll();
@@ -53,8 +55,8 @@ public class ImagePanel extends JLayeredPane {
                 right--;
             if(left <= right) {         
                 swap(left, right);
-                drawCell(Color.RED, left,   arr[left], animationSpeed);
-                drawCell(Color.RED, right, arr[right], animationSpeed);
+                drawCell(highlight, left,   arr[left], animationSpeed);
+                drawCell(highlight, right, arr[right], animationSpeed);
                 drawCell(arr[right].color, right, arr[right], 0);
                 drawCell(arr[left].color, left,   arr[left], 0);
                 left++;
@@ -90,19 +92,19 @@ public class ImagePanel extends JLayeredPane {
         while(i < leftArr.length && j < rightArr.length) {
             if(leftArr[i].val < rightArr[j].val)  arr[k++] =  leftArr[i++];
             else                                  arr[k++] = rightArr[j++];
-            drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(new Color(255, 0, 0, 200), k - 1, arr[k - 1], animationSpeed); 
             drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
 
         drawCell(Color.BLACK, k, arr[k], 1);
         while(i < leftArr.length ) {
             arr[k++] =  leftArr[i++];
-            drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(new Color(255, 0, 0, 200), k - 1, arr[k - 1], animationSpeed); 
             drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
         while(j < rightArr.length) {  
             arr[k++] = rightArr[j++];
-            drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
+            drawCell(new Color(255, 0, 0, 200), k - 1, arr[k - 1], animationSpeed); 
             drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
     }
@@ -112,7 +114,7 @@ public class ImagePanel extends JLayeredPane {
         for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = cols.length - 1; j > i; j--) {
                 if(cols[j].val < cols[j - 1].val) {
-                    drawCell(Color.RED, j, cols[j], animationSpeed);
+                    drawCell(highlight, j, cols[j], animationSpeed);
                     swap(j, j - 1);
                     drawCell(cols[j].color, j, cols[j], 0);
                     drawCell(cols[j - 1].color, j - 1, cols[j - 1], 0);
@@ -127,7 +129,7 @@ public class ImagePanel extends JLayeredPane {
          for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = i + 1; j > 0; j--) {
                 while( j > 0 && cols[j].val < cols[j - 1].val ) {
-                    drawCell(Color.RED, j, cols[j], animationSpeed);
+                    drawCell(highlight, j, cols[j], animationSpeed);
                     swap(j, j - 1);
                     j--;
                     drawCell(cols[j].color, j, cols[j], 0);
@@ -148,7 +150,7 @@ public class ImagePanel extends JLayeredPane {
                     index = j;
                     min = cols[j].val;
                 }
-                drawCell(Color.RED, j, cols[j], animationSpeed);
+                drawCell(highlight, j, cols[j], animationSpeed);
                 drawCell(cols[j].color, j, cols[j], 0);
             }
             swap(i, index);
@@ -304,7 +306,7 @@ public class ImagePanel extends JLayeredPane {
                             int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
                             for(int i = 0; i < cols.length / 2; i++) {
                                 drawCell(cols[i].color, i, cols[i], 0);
-                                drawCell(cols[i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
+                                drawCell(cols[cols.length - 1 - i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
                             }
                         }
         } ).start(); 
@@ -314,14 +316,18 @@ public class ImagePanel extends JLayeredPane {
         return image.getWidth();
     }
 
-    public void setDataSize(int numCells) {
-        this.numCells = numCells;
-        this.width = (int)(image.getWidth() * 0.9) / numCells; 
+    public void setDataSize(int pixelWidth) {
+        numCells = (int)(image.getWidth() * 0.9) / pixelWidth;
+        this.width = pixelWidth; // width of column 
     }
 
     public void setSpeed(int fps) {
         this.animationSpeed = fps;
     }    
+
+    public int getNumCells() {
+        return cols.length;
+    }
 
     private static class Cell {
         int val;

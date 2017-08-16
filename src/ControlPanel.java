@@ -217,22 +217,24 @@ public class ControlPanel extends JPanel {
         // Data set size slider
         JPanel dataSlider = new JPanel();
         dataSlider.setLayout(new GridLayout(0, 1));
-        JLabel sizeLabel = new JLabel(" " + 50 + " data points");
+        JLabel sizeLabel = new JLabel(" " + (int)(imagePanel.getImageWidth() * 0.9) / 75 + " data points");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffdddddd) );
-        int maxCells = imagePanel.getImageWidth();
-        while(((int)(imagePanel.getImageWidth() * 0.9)) / maxCells < 2 || maxCells % 10 != 0) 
-            maxCells -= 10;
-        JSlider dslider = new JSlider(1, maxCells, 50);
+        int minWidth = 256;
+        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 10 != 0) {
+            minWidth--;
+        }
+        JSlider dslider = new JSlider(1, minWidth, (minWidth + 1) / 2);
         dslider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                sizeLabel.setText(" " + dslider.getValue() + " data points");
-                imagePanel.setDataSize( dslider.getValue() );
+                imagePanel.setDataSize( 1 + dslider.getMaximum() - dslider.getValue() );
                 imagePanel.randomizeData();
+                sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
                 imagePanel.drawAll();
             }
         });
+
         dslider.setMinorTickSpacing(1);
         // dslider.setPaintTicks(true);
         dslider.setSnapToTicks(true);
