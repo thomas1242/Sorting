@@ -55,8 +55,8 @@ public class ImagePanel extends JLayeredPane {
                 swap(left, right);
                 drawCell(Color.RED, left,   arr[left], animationSpeed);
                 drawCell(Color.RED, right, arr[right], animationSpeed);
-                drawCell(Color.BLACK, right, arr[right], 0);
-                drawCell(Color.BLACK, left,   arr[left], 0);
+                drawCell(arr[right].color, right, arr[right], 0);
+                drawCell(arr[left].color, left,   arr[left], 0);
                 left++;
                 right--;
             }
@@ -91,19 +91,19 @@ public class ImagePanel extends JLayeredPane {
             if(leftArr[i].val < rightArr[j].val)  arr[k++] =  leftArr[i++];
             else                                  arr[k++] = rightArr[j++];
             drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
-            drawCell(Color.BLACK, k - 1, arr[k - 1], 0); 
+            drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
 
         drawCell(Color.BLACK, k, arr[k], 1);
         while(i < leftArr.length ) {
             arr[k++] =  leftArr[i++];
             drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
-            drawCell(Color.BLACK, k - 1, arr[k - 1], 0); 
+            drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
         while(j < rightArr.length) {  
             arr[k++] = rightArr[j++];
             drawCell(Color.RED, k - 1, arr[k - 1], animationSpeed); 
-            drawCell(Color.BLACK, k - 1, arr[k - 1], 0); 
+            drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0); 
         }
     }
 
@@ -114,8 +114,8 @@ public class ImagePanel extends JLayeredPane {
                 if(cols[j].val < cols[j - 1].val) {
                     drawCell(Color.RED, j, cols[j], animationSpeed);
                     swap(j, j - 1);
-                    drawCell(Color.BLACK, j, cols[j], 0);
-                    drawCell(Color.BLACK, j - 1, cols[j - 1], 0);
+                    drawCell(cols[j].color, j, cols[j], 0);
+                    drawCell(cols[j - 1].color, j - 1, cols[j - 1], 0);
                 }
             }
         }
@@ -130,8 +130,8 @@ public class ImagePanel extends JLayeredPane {
                     drawCell(Color.RED, j, cols[j], animationSpeed);
                     swap(j, j - 1);
                     j--;
-                    drawCell(Color.BLACK, j, cols[j], 0);
-                    drawCell(Color.BLACK, j + 1, cols[j + 1], 0);
+                    drawCell(cols[j].color, j, cols[j], 0);
+                    drawCell(cols[j + 1].color, j + 1, cols[j + 1], 0);
                 }
             }
         }
@@ -149,11 +149,11 @@ public class ImagePanel extends JLayeredPane {
                     min = cols[j].val;
                 }
                 drawCell(Color.RED, j, cols[j], animationSpeed);
-                drawCell(Color.BLACK, j, cols[j], 0);
+                drawCell(cols[j].color, j, cols[j], 0);
             }
             swap(i, index);
-            drawCell(Color.BLACK, index, cols[index], 0);
-            drawCell(Color.BLACK, i, cols[i], 0);
+            drawCell(cols[index].color, index, cols[index], 0);
+            drawCell(cols[i].color, i, cols[i], 0);
         }
 
     }
@@ -181,7 +181,7 @@ public class ImagePanel extends JLayeredPane {
                 g2d.setColor( new Color(0xffabc123) );        // draw background
                 g2d.fillRect((int)(width * 0.05), (int)(width * 0.05) + 1, (int)(width * 0.9), height - 1);
                 for(int i = cols.length - 1; i >= 0; i--)     
-                    drawCell(Color.BLACK, i, cols[i]);    
+                    drawCell(cols[i].color, i, cols[i]);    
                 g2d.setColor( Color.BLACK );                  // draw border
                 g2d.drawRect((int)(width * 0.05), (int)(width * 0.05), (int)(width * 0.9), height);
                 repaint();
@@ -200,6 +200,8 @@ public class ImagePanel extends JLayeredPane {
                 g2d.fillRect(x + index * width, y + 1, width, height - 1);
                 g2d.setColor(color);
                 g2d.fillRect(x + index * width, y + (height - c.pixelHeight), width, c.pixelHeight);
+                g2d.setColor(Color.BLACK);
+                g2d.drawLine(x + index * width, y + (height - c.pixelHeight), x + index * width + width - 1, y + (height - c.pixelHeight));
                 repaint();
             }
         });
@@ -215,7 +217,57 @@ public class ImagePanel extends JLayeredPane {
         g2d.fillRect(x + index * width, y + 1, width, height - 1);
         g2d.setColor(color);
         g2d.fillRect(x + index * width, y + (this.height - c.pixelHeight), width, c.pixelHeight);
+        g2d.setColor( Color.BLACK );  
+        g2d.drawLine(x + index * width, y + (this.height - c.pixelHeight), x + index * width + width - 1, y + (this.height - c.pixelHeight));
     }
+
+    private double[] getDeltas(int start, int end, int n) {
+        double start_R, start_G, start_B,       
+                 end_R,   end_G,   end_B,
+               delta_R, delta_G, delta_B;
+        
+        end_R = (end >> 16) & 0xFF;             
+        end_G = (end >> 8 ) & 0xFF;
+        end_B = (end      ) & 0xFF;
+        
+        start_R = (start >> 16) & 0xFF;         
+        start_G = (start >> 8 ) & 0xFF;
+        start_B = (start      ) & 0xFF;
+        
+        delta_R = (end_R - start_R) / n;        // change per color channel
+        delta_G = (end_G - start_G) / n;
+        delta_B = (end_B - start_B) / n;
+        
+        double[] deltas = { delta_R, delta_G, delta_B };    
+        return deltas;                                      
+    }
+
+    private Color[] getColors(int start, int end, int length) {
+        Color[] colors = new Color[length];
+        
+        int intARGB;                            // integer to hold synthesized color values
+        int value = start;                                            
+        double value_R = (value >> 16) & 0xFF;
+        double value_G = (value >> 8 ) & 0xFF;
+        double value_B = (value      ) & 0xFF;
+        
+        double[] deltas = getDeltas( start, end, colors.length - 1 );  
+        colors[0] = new Color(start);
+        colors[colors.length - 1] = new Color(end);
+        
+        // fill with interpolated Colors
+        for (int i = 1; i < colors.length - 1; i++) {         
+            value_R += deltas[0];
+            value_G += deltas[1];
+            value_B += deltas[2];
+             
+            intARGB = (0xFF000000) | ((int)value_R << 16) | ((int)value_G << 8) | (int)value_B;
+            colors[i] = new Color(intARGB);
+        }
+
+        return colors;
+    }
+
 
     public void randomizeData() {
         Random rand = new Random();
@@ -224,14 +276,35 @@ public class ImagePanel extends JLayeredPane {
             int val = rand.nextInt(2 * numCells + 1);
             cols[i] = new Cell(val, width, (int)(height * val / (2 * numCells + 1)));
         }
+
+        Color[] colors = getColors( 0xffcccccc, 0x0fFFD700, numCells );
+
+        Cell[] temp = new Cell[cols.length];
+        for(int i = 0; i < cols.length; i++) 
+            temp[i] = cols[i];                      // copy random data to temp arr
+
+        for(int i = 0; i < temp.length - 1;  i++) { // sort temp arr 
+            for(int j = i + 1; j > 0; j--) {
+                while( j > 0 && temp[j].val < temp[j - 1].val ) {
+                    Cell t = temp[j];
+                    temp[j] = temp[j-1];
+                    temp[j-1] = t;
+                    j--;
+                }
+            }
+        }
+
+        for (int i = 0; i < temp.length; i++)       // assign iterpolated colors
+            temp[i].color = colors[i];
     }
 
     public void animateRandomizeData() {
         new Thread( new Runnable() {
                         public void run() { 
+                            int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
                             for(int i = 0; i < cols.length / 2; i++) {
-                                drawCell(Color.BLACK, i, cols[i], 0);
-                                drawCell(Color.BLACK, cols.length - 1 - i, cols[cols.length - 1 - i], 1);
+                                drawCell(cols[i].color, i, cols[i], 0);
+                                drawCell(cols[i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
                             }
                         }
         } ).start(); 
@@ -253,10 +326,13 @@ public class ImagePanel extends JLayeredPane {
     private static class Cell {
         int val;
         int pixelWidth, pixelHeight;
+        Color color;
+        int index;
         public Cell(int val, int pixelWidth, int pixelHeight) {
             this.val = val;
             this.pixelWidth = pixelWidth;
             this.pixelHeight = pixelHeight;
+            color = Color.BLACK;
         }
     } 
 }
