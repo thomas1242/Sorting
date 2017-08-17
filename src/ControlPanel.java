@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -10,6 +11,7 @@ public class ControlPanel extends JPanel {
     private boolean quickSort, mergeSort, bubbleSort, insertSort, selectSort; 
     private ImagePanel imagePanel;
     private ColorChooser colorChooser;
+    private ColorDisplay colorDisplay;
 
     public ControlPanel(ImagePanel imagePanel) {
         
@@ -49,6 +51,10 @@ public class ControlPanel extends JPanel {
                 colorChooser.curr_x += (x_offset);
                 colorChooser.curr_y += (y_offset);
                 colorChooser.setBounds(colorChooser.curr_x, colorChooser.curr_y, colorChooser.width, colorChooser.height);
+
+                colorDisplay.curr_x += (x_offset);
+                colorDisplay.curr_y += (y_offset);
+                colorDisplay.setBounds(colorDisplay.curr_x, colorDisplay.curr_y, colorDisplay.width, colorDisplay.height);
 
                 imagePanel.repaint();
             }
@@ -298,8 +304,248 @@ public class ControlPanel extends JPanel {
         selectMergesort();
     }
 
-    public void setColorChooser(ColorChooser colorChooser) {
+    public void setColorChooser(ColorChooser colorChooser, ColorDisplay popUp) {
         this.colorChooser = colorChooser;
+        this.colorDisplay = popUp;
+    }
+}
+
+class ColorChooser extends JPanel {
+
+    public int x, y, curr_x, curr_y, width, height;
+    private BufferedImage image = null;
+    private Graphics2D g2d = null;
+    private int borderWidth = 7;
+    private ControlPanel controlPanel;
+    private ColorDisplay colorDisplay;
+    boolean isVisible = true;
+    int startColor = 0xffcccccc, endColor = 0x0fFFD700;
+
+    public ColorChooser(ImagePanel imagePanel) {
+
+        setBackground(new Color(50, 50, 50, 140));
+        int width = (int)(imagePanel.getWidth() * .175);
+        int height = (int)(imagePanel.getHeight() * .15);
+        x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
+        y = curr_y = (int)(imagePanel.getHeight() * .20) + height * 3 + 7 * 2;
+
+        image = new BufferedImage(width - borderWidth, (int)(height / 2.5) - borderWidth, BufferedImage.TYPE_INT_ARGB);
+        g2d = (Graphics2D)image.getGraphics();
+        setBounds(curr_x, curr_y, width, (int)(height / 2.5));
+        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 140), borderWidth));
+
+        drawImage();
+        setVisible(true);
+        setOpaque(true);
+
+        this.width = image.getWidth() + borderWidth;
+        this.height = (int)(height / 2.5);
+        addMouseListener( new MouseAdapter() {
+            public void mousePressed( MouseEvent event ) {
+                if(event.getButton() == MouseEvent.BUTTON1) {
+                    x = (int)event.getPoint().getX();
+                    y = (int)event.getPoint().getY();
+                    if(x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth) {
+                        if(isVisible) {
+                            colorDisplay.setVisible(false);
+                            isVisible = false;
+                        }
+                        else {
+                            colorDisplay.setVisible(true);
+                            isVisible = true;
+                        }
+                    }
+                    imagePanel.repaint();
+                }
+            }
+        } );
+
+        addMouseMotionListener( new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent event) {
+                int x_offset = (int)event.getPoint().getX() - x;
+                int y_offset = (int)event.getPoint().getY() - y;
+
+                curr_x += (x_offset);
+                curr_y += (y_offset);
+                setBounds(curr_x, curr_y, width, (int)(height / 2.5));
+
+                controlPanel.curr_x += (x_offset);
+                controlPanel.curr_y += (y_offset);
+                controlPanel.setBounds(controlPanel.curr_x, controlPanel.curr_y, controlPanel.width, controlPanel.height);
+
+                colorDisplay.curr_x += (x_offset);
+                colorDisplay.curr_y += (y_offset);
+                colorDisplay.setBounds(colorDisplay.curr_x, colorDisplay.curr_y, colorDisplay.width, colorDisplay.height);
+
+                imagePanel.repaint();
+            }
+        } );
     }
 
+    public void drawImage() {
+        Color[] colors = Interpolation.getColors(startColor, endColor, image.getWidth() );
+
+        for (int i = 0; i < image.getWidth(); i++) {
+            g2d.setColor(colors[i]);
+            g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
+        }
+
+        // g2d.setColor( new Color(70, 70, 70, 140) );
+        // g2d.drawLine(image.getWidth() / 2 + borderWidth, borderWidth, image.getWidth() / 2 + borderWidth, image.getHeight() + borderWidth );
+
+        repaint();
+    }
+
+    public void setColors(int start, int end) {
+        this.startColor = start;
+        this.endColor = end;
+    }
+
+    public void setControlPanel(ControlPanel controlPanel, ColorDisplay popUp) {
+        this.controlPanel = controlPanel;
+        this.colorDisplay = popUp;
+    }
+
+    protected void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, null);
+    }
+}
+
+class ColorDisplay extends JPanel {
+
+    public int x, y, curr_x, curr_y, width, height;
+    private ImagePanel imagePanel;
+    private ColorChooser colorChooser;
+    private BufferedImage image = null;
+    private Graphics2D g2d = null;
+    private int borderWidth = 7;
+
+    private JSlider r1, g1, b1, r2, g2, b2;
+    private int rValue, gValue, bValue, rValue2, gValue2 ,bValue2;
+
+    public ColorDisplay(ImagePanel imagePanel, ColorChooser colorChooser) {
+
+        width = (int)(imagePanel.getWidth() * .6);
+        height = (int)(imagePanel.getHeight() * .45);
+        x = curr_x = (int)(imagePanel.getWidth() * (1 - .80));
+        y = curr_y = (int)(imagePanel.getHeight() * .20);
+
+        image = new BufferedImage(width - borderWidth, (int)(height) - borderWidth, BufferedImage.TYPE_INT_ARGB);
+        g2d = (Graphics2D)image.getGraphics();
+
+        setBounds(curr_x, curr_y, width, height);
+        setLayout(new GridLayout(0, 2));
+        setBackground(new Color(50, 50, 50, 140));
+        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 70), 7));
+        setVisible(true);
+        setOpaque(true);
+
+        this.imagePanel = imagePanel;
+        this.colorChooser = colorChooser;
+        r1 = new JSlider(JSlider.HORIZONTAL,0,255, 0xcc);
+        r1.setMajorTickSpacing(85);
+        r1.setPaintLabels(true);
+        g1 = new JSlider(JSlider.HORIZONTAL,0,255,0xcc);
+        g1.setMajorTickSpacing(85);
+        g1.setPaintLabels(true);
+        b1 = new JSlider(JSlider.HORIZONTAL,0,255,0xcc);
+        b1.setMajorTickSpacing(85);
+        b1.setPaintLabels(true);
+
+        r2 = new JSlider(JSlider.HORIZONTAL,0,255,0xFF);
+        r2.setMajorTickSpacing(85);
+        r2.setPaintLabels(true);
+        g2 = new JSlider(JSlider.HORIZONTAL,0,255,0xD7);
+        g2.setMajorTickSpacing(85);
+        g2.setPaintLabels(true);
+        b2 = new JSlider(JSlider.HORIZONTAL,0,255,0x00);
+        b2.setMajorTickSpacing(85);
+        b2.setPaintLabels(true);
+
+        r1.setFont(new Font("plain", Font.BOLD, 13));
+        r2.setFont(new Font("plain", Font.BOLD, 13));
+        g1.setFont(new Font("plain", Font.BOLD, 13));
+        g2.setFont(new Font("plain", Font.BOLD, 13));
+        b1.setFont(new Font("plain", Font.BOLD, 13));
+        b2.setFont(new Font("plain", Font.BOLD, 13));
+
+        r1.setForeground(Color.RED);
+        r2.setForeground(Color.RED);
+        g1.setForeground(Color.GREEN);
+        g2.setForeground(Color.GREEN);
+        b1.setForeground(Color.BLUE);
+        b2.setForeground(Color.BLUE);
+
+        Event e = new Event();
+        r1.addChangeListener(e);
+        g1.addChangeListener(e);
+        b1.addChangeListener(e);
+        r2.addChangeListener(e);
+        g2.addChangeListener(e);
+        b2.addChangeListener(e);
+
+        this.add(r1);
+        this.add(r2);
+        this.add(g1);
+        this.add(g2);
+        this.add(b1);
+        this.add(b2);
+        drawImage();
+
+        addMouseListener( new MouseAdapter() {
+            public void mousePressed( MouseEvent event ) {
+                if(event.getButton() == MouseEvent.BUTTON1) {
+                    x = (int)event.getPoint().getX();
+                    y = (int)event.getPoint().getY();
+                    imagePanel.repaint();
+                }
+            }
+        } );
+
+        addMouseMotionListener( new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent event) {
+                int x_offset = (int)event.getPoint().getX() - x;
+                int y_offset = (int)event.getPoint().getY() - y;
+                curr_x += (x_offset);
+                curr_y += (y_offset);
+                setBounds(curr_x, curr_y, width, height);
+                imagePanel.repaint();
+            }
+        } );
+    }
+
+    public void drawImage() {
+        rValue = r1.getValue();
+        gValue = g1.getValue();
+        bValue = b1.getValue();
+
+        rValue2 = r2.getValue();
+        gValue2 = g2.getValue();
+        bValue2 = b2.getValue();
+
+        int start = (0xFF000000) | ((int)rValue << 16) | ((int)gValue << 8) | (int)bValue;
+        int end = (0xFF000000) | ((int)rValue2 << 16) | ((int)gValue2 << 8) | (int)bValue2;
+
+        Color[] colors = Interpolation.getColors( start, end, image.getWidth() );
+
+        for (int i = 0; i < image.getWidth(); i++) {
+            g2d.setColor(colors[i]);
+            g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
+        }
+        colorChooser.setColors(start, end);
+        colorChooser.drawImage();
+        imagePanel.setColors(start, end);
+        repaint();
+    }
+
+    class Event implements ChangeListener {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            drawImage();
+        }
+    }
+
+    protected void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, null);
+    }
 }

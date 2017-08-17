@@ -4,7 +4,6 @@ import java.awt.image.*;
 import java.util.Random;
 
 public class ImagePanel extends JLayeredPane {
-
     private BufferedImage image = null; 
     private Graphics2D g2d = null;
 
@@ -13,9 +12,8 @@ public class ImagePanel extends JLayeredPane {
     private int height, width;  // in pixels
     private int animationSpeed;
 
-    int start, end;
-
-    private Color highlight = new Color(255, 0, 0, 200);
+    int startColor = 0xffcccccc, endColor = 0x0fFFD700;
+    private Color highlightColor = new Color(255, 0, 0, 200);
 
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
@@ -24,24 +22,21 @@ public class ImagePanel extends JLayeredPane {
         
         ControlPanel controlPanel = new ControlPanel(this);
         ColorChooser colorChooser = new ColorChooser(this);
-        ColorPopUp popUp = new ColorPopUp( this, colorChooser );
-        controlPanel.setColorChooser(colorChooser);
+        ColorDisplay popUp = new ColorDisplay( this, colorChooser );
+        controlPanel.setColorChooser(colorChooser, popUp);
         colorChooser.setControlPanel(controlPanel, popUp);
 
         add(controlPanel, new Integer(3));
         add(colorChooser, new Integer(4));
         add(popUp, new Integer(4));
 
-
         animationSpeed = 30;
         numCells = (int)(image.getWidth() * 0.9) / 12;
         this.width = 12; // width of column 
-        this.height = (int)(image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    // column height
+        this.height = (image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    // column height
 
-        setColors( 0xffcccccc, 0x0fFFD700 );
         randomizeData();
         drawAll();
-        repaint();
     }
 
     protected void paintComponent(Graphics g) {
@@ -69,8 +64,8 @@ public class ImagePanel extends JLayeredPane {
                 right--;
             if(left <= right) {         
                 swap(left, right);
-                drawCell(highlight, left,   arr[left], 0);
-                drawCell(highlight, right, arr[right], animationSpeed);
+                drawCell(highlightColor, left,   arr[left], 0);
+                drawCell(highlightColor, right, arr[right], animationSpeed);
                 drawCell(arr[right].color, right, arr[right], 0);
                 drawCell(arr[left].color, left,   arr[left], 0);
                 left++;
@@ -129,7 +124,7 @@ public class ImagePanel extends JLayeredPane {
         for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = cols.length - 1; j > i; j--) {
                 if(cols[j].val < cols[j - 1].val) {
-                    drawCell(highlight, j, cols[j], animationSpeed);
+                    drawCell(highlightColor, j, cols[j], animationSpeed);
                     swap(j, j - 1);
                     drawCell(cols[j].color, j, cols[j], 0);
                     drawCell(cols[j - 1].color, j - 1, cols[j - 1], 0);
@@ -144,7 +139,7 @@ public class ImagePanel extends JLayeredPane {
          for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = i + 1; j > 0; j--) {
                 while( j > 0 && cols[j].val < cols[j - 1].val ) {
-                    drawCell(highlight, j, cols[j], animationSpeed);
+                    drawCell(highlightColor, j, cols[j], animationSpeed);
                     swap(j, j - 1);
                     j--;
                     drawCell(cols[j].color, j, cols[j], 0);
@@ -166,8 +161,8 @@ public class ImagePanel extends JLayeredPane {
                     index = j;
                     min = cols[j].val;
                 }
-                drawCell(highlight, j, cols[j], animationSpeed);
-                drawCell(highlight, index, cols[index], 0);
+                drawCell(highlightColor, j, cols[j], animationSpeed);
+                drawCell(highlightColor, index, cols[index], 0);
                 drawCell(cols[j].color, j, cols[j], 0);
             }
             swap(i, index);
@@ -239,54 +234,6 @@ public class ImagePanel extends JLayeredPane {
         g2d.drawLine(x + index * width, y + (this.height - c.pixelHeight), x + index * width + width - 1, y + (this.height - c.pixelHeight));
     }
 
-    private double[] getDeltas(int start, int end, int n) {
-        double start_R, start_G, start_B,       
-                 end_R,   end_G,   end_B,
-               delta_R, delta_G, delta_B;
-        
-        end_R = (end >> 16) & 0xFF;             
-        end_G = (end >> 8 ) & 0xFF;
-        end_B = (end      ) & 0xFF;
-        
-        start_R = (start >> 16) & 0xFF;         
-        start_G = (start >> 8 ) & 0xFF;
-        start_B = (start      ) & 0xFF;
-        
-        delta_R = (end_R - start_R) / n;        // change per color channel
-        delta_G = (end_G - start_G) / n;
-        delta_B = (end_B - start_B) / n;
-        
-        double[] deltas = { delta_R, delta_G, delta_B };    
-        return deltas;                                      
-    }
-
-    private Color[] getColors(int length) {
-        Color[] colors = new Color[length];
-        
-        int intARGB;                            // integer to hold synthesized color values
-        int value = start;                                            
-        double value_R = (value >> 16) & 0xFF;
-        double value_G = (value >> 8 ) & 0xFF;
-        double value_B = (value      ) & 0xFF;
-        
-        double[] deltas = getDeltas( start, end, colors.length - 1 );  
-        colors[0] = new Color(start);
-        colors[colors.length - 1] = new Color(end);
-        
-        // fill with interpolated Colors
-        for (int i = 1; i < colors.length - 1; i++) {         
-            value_R += deltas[0];
-            value_G += deltas[1];
-            value_B += deltas[2];
-             
-            intARGB = (0xFF000000) | ((int)value_R << 16) | ((int)value_G << 8) | (int)value_B;
-            colors[i] = new Color(intARGB);
-        }
-
-        return colors;
-    }
-
-
     public void randomizeData() {
         Random rand = new Random();
         cols = new Cell[numCells];
@@ -295,7 +242,7 @@ public class ImagePanel extends JLayeredPane {
             cols[i] = new Cell(val, (int)(height * val / (2 * numCells + 1)));
         }
 
-        Color[] colors = getColors( numCells );
+        Color[] colors = Interpolation.getColors(startColor, endColor, numCells );
 
         Cell[] temp = new Cell[cols.length];
         for(int i = 0; i < cols.length; i++) 
@@ -346,8 +293,8 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public void setColors(int start, int end) {
-        this.start = start;
-        this.end = end;
+        this.startColor = start;
+        this.endColor = end;
     }
 
     private static class Cell {
