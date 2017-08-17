@@ -22,8 +22,9 @@ public class ControlPanel extends JPanel {
 
         setBounds(curr_x, curr_y, width, height);
         setLayout(new GridLayout(0, 1));
-        setBackground(new Color(50, 50, 50, 140));
-        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 70), 7));
+        setBackground(new Color(70, 70, 70, 130));
+        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 0), 7));
+
         setVisible(true);
         setOpaque(true);
 
@@ -332,7 +333,8 @@ class ColorChooser extends JPanel {
         image = new BufferedImage(width - borderWidth, (int)(height / 2.5) - borderWidth, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
         setBounds(curr_x, curr_y, width, (int)(height / 2.5));
-        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 140), borderWidth));
+        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), borderWidth));
+        setBackground(new Color(70, 70, 70, 130));
 
         drawImage();
         setVisible(true);
@@ -419,15 +421,13 @@ class ColorDisplay extends JPanel {
     private BufferedImage image = null;
     private Graphics2D g2d = null;
     private int borderWidth = 7;
-
     private JSlider r1, g1, b1, r2, g2, b2;
-    private int rValue, gValue, bValue, rValue2, gValue2 ,bValue2;
 
     public ColorDisplay(ImagePanel imagePanel, ColorChooser colorChooser) {
 
         width = (int)(imagePanel.getWidth() * .6);
         height = (int)(imagePanel.getHeight() * .45);
-        x = curr_x = (int)(imagePanel.getWidth() * (1 - .80));
+        x = curr_x = (int)(imagePanel.getWidth() * (1 - .80) - 7 * 2);
         y = curr_y = (int)(imagePanel.getHeight() * .20);
 
         image = new BufferedImage(width - borderWidth, (int)(height) - borderWidth, BufferedImage.TYPE_INT_ARGB);
@@ -435,8 +435,8 @@ class ColorDisplay extends JPanel {
 
         setBounds(curr_x, curr_y, width, height);
         setLayout(new GridLayout(0, 2));
-        setBackground(new Color(50, 50, 50, 140));
-        setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 70), 7));
+        setBackground(new Color(70, 70, 70, 130));
+        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), 7));
         setVisible(false);
         setOpaque(true);
 
@@ -515,13 +515,13 @@ class ColorDisplay extends JPanel {
     }
 
     public void drawImage() {
-        rValue = r1.getValue();
-        gValue = g1.getValue();
-        bValue = b1.getValue();
+        int rValue = r1.getValue();
+        int gValue = g1.getValue();
+        int bValue = b1.getValue();
 
-        rValue2 = r2.getValue();
-        gValue2 = g2.getValue();
-        bValue2 = b2.getValue();
+        int rValue2 = r2.getValue();
+        int gValue2 = g2.getValue();
+        int bValue2 = b2.getValue();
 
         int start = (0xFF000000) | ((int)rValue << 16) | ((int)gValue << 8) | (int)bValue;
         int end = (0xFF000000) | ((int)rValue2 << 16) | ((int)gValue2 << 8) | (int)bValue2;
@@ -535,6 +535,8 @@ class ColorDisplay extends JPanel {
         colorChooser.setColors(start, end);
         colorChooser.drawImage();
         imagePanel.setColors(start, end);
+        imagePanel.assignColors();
+        imagePanel.drawAll();
         repaint();
     }
 

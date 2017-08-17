@@ -242,6 +242,10 @@ public class ImagePanel extends JLayeredPane {
             cols[i] = new Cell(val, (int)(height * val / (2 * numCells + 1)));
         }
 
+        assignColors();
+    }
+
+    public void assignColors() {
         Color[] colors = Interpolation.getColors(startColor, endColor, numCells );
 
         Cell[] temp = new Cell[cols.length];
