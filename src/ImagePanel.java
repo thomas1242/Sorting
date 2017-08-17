@@ -22,11 +22,14 @@ public class ImagePanel extends JLayeredPane {
         
         ControlPanel controlPanel = new ControlPanel(this);
         ColorChooser colorChooser = new ColorChooser(this);
+        ColorPopUp popUp = new ColorPopUp( this, colorChooser );
         controlPanel.setColorChooser(colorChooser);
-        colorChooser.setControlPanel(controlPanel);
+        colorChooser.setControlPanel(controlPanel, popUp);
 
         add(controlPanel, new Integer(3));
         add(colorChooser, new Integer(4));
+        add(popUp, new Integer(4));
+
 
         animationSpeed = 30;
         numCells = (int)(image.getWidth() * 0.9) / 12;

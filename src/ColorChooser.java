@@ -12,6 +12,9 @@ public class ColorChooser extends JPanel {
     private ImagePanel imagePanel;
     private int borderWidth = 7;
     private ControlPanel controlPanel;
+    private ColorPopUp popUp;
+    boolean t = true;
+
 
     public ColorChooser(ImagePanel imagePanel) {
 
@@ -42,6 +45,18 @@ public class ColorChooser extends JPanel {
                 if(event.getButton() == MouseEvent.BUTTON1) {
                     x = (int)event.getPoint().getX();
                     y = (int)event.getPoint().getY();
+
+                    if(x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth) {
+                             if(t) {
+                                 popUp.setVisible(false);
+                                 t = false;
+                             }
+                             else {
+                                 popUp.setVisible(true);
+                                 t = true;
+                             }
+                    }
+
                     imagePanel.repaint();
                 }
             }
@@ -51,6 +66,7 @@ public class ColorChooser extends JPanel {
             public void mouseDragged(MouseEvent event) {
                 int x_offset = (int)event.getPoint().getX() - x;
                 int y_offset = (int)event.getPoint().getY() - y;
+
                 curr_x += (x_offset);
                 curr_y += (y_offset);
                 setBounds(curr_x, curr_y, width, (int)(height / 2.5));
@@ -126,8 +142,9 @@ public class ColorChooser extends JPanel {
         return colors;
     }
 
-    public void setControlPanel(ControlPanel controlPanel) {
+    public void setControlPanel(ControlPanel controlPanel, ColorPopUp popUp) {
         this.controlPanel = controlPanel;
+        this.popUp = popUp;
     }
 
 
