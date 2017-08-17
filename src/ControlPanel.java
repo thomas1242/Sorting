@@ -318,7 +318,7 @@ class ColorChooser extends JPanel {
     private int borderWidth = 7;
     private ControlPanel controlPanel;
     private ColorDisplay colorDisplay;
-    boolean isVisible = true;
+    boolean isVisible = false;
     int startColor = 0xffcccccc, endColor = 0x0fFFD700;
 
     public ColorChooser(ImagePanel imagePanel) {
@@ -437,7 +437,7 @@ class ColorDisplay extends JPanel {
         setLayout(new GridLayout(0, 2));
         setBackground(new Color(50, 50, 50, 140));
         setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 70), 7));
-        setVisible(true);
+        setVisible(false);
         setOpaque(true);
 
         this.imagePanel = imagePanel;
