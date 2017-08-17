@@ -13,16 +13,13 @@ public class ColorPopUp extends JPanel {
 
     private BufferedImage image = null; 
     private Graphics2D g2d = null;
-        private int borderWidth = 7;
-
+    private int borderWidth = 7;
 
     private JSlider r,g,b;
     private int rValue,gValue,bValue;
 
     private JSlider r2,g2,b2;
     private int rValue2,gValue2,bValue2;
-
-
 
     public ColorPopUp(ImagePanel imagePanel, ColorChooser colorChooser) {
         
@@ -43,12 +40,7 @@ public class ColorPopUp extends JPanel {
         setOpaque(true);
 
         this.imagePanel = imagePanel;
-        this.colorChooser = colorChooser;
-// ColorChooser c = new ColorChooser();
-        GridBagConstraints gbc = new GridBagConstraints();
-        
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx  = 0.5;
+        this.colorChooser = colorChooser;       
     
         r = new JSlider(JSlider.HORIZONTAL,0,255, 0xcc);
         r.setMajorTickSpacing(85);
@@ -79,6 +71,12 @@ public class ColorPopUp extends JPanel {
         b2.setMajorTickSpacing(85);
         b2.setPaintLabels(true);
 
+        r.setFont(new Font("plain", Font.BOLD, 13));
+        r2.setFont(new Font("plain", Font.BOLD, 13));
+        g.setFont(new Font("plain", Font.BOLD, 13));
+        g2.setFont(new Font("plain", Font.BOLD, 13));
+        b.setFont(new Font("plain", Font.BOLD, 13));
+        b2.setFont(new Font("plain", Font.BOLD, 13));
 
         r.setForeground(Color.RED);
         r2.setForeground(Color.RED);
@@ -92,32 +90,12 @@ public class ColorPopUp extends JPanel {
         g2.addChangeListener(e2);
         b2.addChangeListener(e2);
         
-        gbc.gridx =0;
-        gbc.gridy =0;
-        this.add(r, gbc);
-        gbc.gridx =0;
-        gbc.gridy =1;
-        this.add(r2, gbc);
-        gbc.gridx =0;
-        gbc.gridy =2;
-        this.add(g,gbc);
-
-        gbc.gridx =1;
-        gbc.gridy =0;
-        this.add(g2, gbc);
-        gbc.gridx =1;
-        gbc.gridy =1;
-        this.add(b, gbc);
-        gbc.gridx =1;
-        gbc.gridy =2;
-        this.add(b2,gbc);
-        
-        JLabel spacetaker = new JLabel();
-        gbc.gridx =0;
-        gbc.gridy =3;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.PAGE_END;
-        this.add(spacetaker,gbc);
+        this.add(r);
+        this.add(r2);
+        this.add(g);
+        this.add(g2);
+        this.add(b);
+        this.add(b2);
 
         drawImage();
 
@@ -208,32 +186,27 @@ public class ColorPopUp extends JPanel {
             g2d.setColor(colors[i]);
             g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
         }
-
+        colorChooser.setColors(start, end);
+        colorChooser.drawImage();
+        imagePanel.setColors(start, end);
         repaint();
     }
 
-
-
     class eventOne implements ChangeListener {
-
         @Override
         public void stateChanged(ChangeEvent e) {
             drawImage();
         }
-        
     }
 
     class eventTwo implements ChangeListener {
-
         @Override
         public void stateChanged(ChangeEvent e) {
             drawImage();
         }
-        
     }
 
     protected void paintComponent(Graphics g) {
             g.drawImage(image, 0, 0, null);
         }
-
 }

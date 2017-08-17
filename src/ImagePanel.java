@@ -13,6 +13,8 @@ public class ImagePanel extends JLayeredPane {
     private int height, width;  // in pixels
     private int animationSpeed;
 
+    int start, end;
+
     private Color highlight = new Color(255, 0, 0, 200);
 
     public ImagePanel(int width, int height) {
@@ -36,6 +38,7 @@ public class ImagePanel extends JLayeredPane {
         this.width = 12; // width of column 
         this.height = (int)(image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    // column height
 
+        setColors( 0xffcccccc, 0x0fFFD700 );
         randomizeData();
         drawAll();
         repaint();
@@ -257,7 +260,7 @@ public class ImagePanel extends JLayeredPane {
         return deltas;                                      
     }
 
-    private Color[] getColors(int start, int end, int length) {
+    private Color[] getColors(int length) {
         Color[] colors = new Color[length];
         
         int intARGB;                            // integer to hold synthesized color values
@@ -292,7 +295,7 @@ public class ImagePanel extends JLayeredPane {
             cols[i] = new Cell(val, (int)(height * val / (2 * numCells + 1)));
         }
 
-        Color[] colors = getColors( 0xffcccccc, 0x0fFFD700, numCells );
+        Color[] colors = getColors( numCells );
 
         Cell[] temp = new Cell[cols.length];
         for(int i = 0; i < cols.length; i++) 
@@ -340,6 +343,11 @@ public class ImagePanel extends JLayeredPane {
 
     public int getNumCells() {
         return numCells;
+    }
+
+    public void setColors(int start, int end) {
+        this.start = start;
+        this.end = end;
     }
 
     private static class Cell {

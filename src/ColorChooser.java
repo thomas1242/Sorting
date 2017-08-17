@@ -15,6 +15,7 @@ public class ColorChooser extends JPanel {
     private ColorPopUp popUp;
     boolean t = true;
 
+    int start, end;
 
     public ColorChooser(ImagePanel imagePanel) {
 
@@ -30,12 +31,14 @@ public class ColorChooser extends JPanel {
         setBounds(curr_x, curr_y, width, (int)(height / 2.5));
         setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 140), borderWidth));
 
+        setColors(0xFFcccccc, 0xFFD700);
         drawImage();
         setVisible(true);
         setOpaque(true);
 
         this.width = image.getWidth() + borderWidth;
         this.height = (int)(height / 2.5);
+
 
         repaint();
       
@@ -82,7 +85,7 @@ public class ColorChooser extends JPanel {
 
 
     public void drawImage() {
-        Color[] colors = getColors( 0xffcccccc,  0x0fFFD700, image.getWidth() );
+        Color[] colors = getColors( image.getWidth() );
 
         for (int i = 0; i < image.getWidth(); i++) {
             g2d.setColor(colors[i]);
@@ -116,7 +119,7 @@ public class ColorChooser extends JPanel {
         return deltas;                                      
     }
 
-    private Color[] getColors(int start, int end, int length) {
+    private Color[] getColors(int length) {
         Color[] colors = new Color[length];
         
         int intARGB;                            // integer to hold synthesized color values
@@ -140,6 +143,11 @@ public class ColorChooser extends JPanel {
         }
 
         return colors;
+    }
+
+    public void setColors(int start, int end) {
+        this.start = start;
+        this.end = end;
     }
 
     public void setControlPanel(ControlPanel controlPanel, ColorPopUp popUp) {
