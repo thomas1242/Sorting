@@ -234,7 +234,7 @@ public class ControlPanel extends JPanel {
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffdddddd) );
         int minWidth = 256;
-        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 10 != 0) {
+        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) {
             minWidth--;
         }
         imagePanel.setDataSize( 12 );
