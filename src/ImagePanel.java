@@ -6,13 +6,11 @@ import java.util.Random;
 public class ImagePanel extends JLayeredPane {
     private BufferedImage image = null; 
     private Graphics2D g2d = null;
-
     private Cell[] cols;
     private int numCells;
-    private int height, width;  // in pixels
+    private int height, width;  
     private int animationSpeed;
-
-    int startColor = 0xffcccccc, endColor = 0x0fFFD700;
+    private int startColor = 0xffcccccc, endColor = 0x0fFFD700;
     private Color highlightColor = new Color(255, 0, 0, 200);
 
     public ImagePanel(int width, int height) {
@@ -20,20 +18,11 @@ public class ImagePanel extends JLayeredPane {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
         
-        ControlPanel controlPanel = new ControlPanel(this);
-        ColorChooser colorChooser = new ColorChooser(this);
-        ColorDisplay popUp = new ColorDisplay( this, colorChooser );
-        controlPanel.setColorChooser(colorChooser, popUp);
-        colorChooser.setControlPanel(controlPanel, popUp);
-
-        add(controlPanel, new Integer(3));
-        add(colorChooser, new Integer(4));
-        add(popUp, new Integer(4));
-
+        addComponents();
         animationSpeed = 30;
         numCells = (int)(image.getWidth() * 0.9) / 12;
-        this.width = 12; // width of column 
-        this.height = (image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    // column height
+        this.width = 12;  
+        this.height = (image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    
 
         randomizeData();
         drawAll();
@@ -232,6 +221,17 @@ public class ImagePanel extends JLayeredPane {
         g2d.fillRect(x + index * width, y + (this.height - c.pixelHeight), width, c.pixelHeight);
         g2d.setColor( Color.BLACK );  
         g2d.drawLine(x + index * width, y + (this.height - c.pixelHeight), x + index * width + width - 1, y + (this.height - c.pixelHeight));
+    }
+
+    private void addComponents() {
+        ControlPanel controlPanel = new ControlPanel(this);
+        ColorChooser colorChooser = new ColorChooser(this);
+        ColorDisplay popUp = new ColorDisplay( this, colorChooser );
+        controlPanel.setColorChooser(colorChooser, popUp);
+        colorChooser.setControlPanel(controlPanel, popUp);
+        add(controlPanel, new Integer(3));
+        add(colorChooser, new Integer(4));
+        add(popUp, new Integer(4));
     }
 
     public void randomizeData() {

@@ -6,9 +6,9 @@ import javax.swing.event.*;
 
 public class ControlPanel extends JPanel {
 
-    public int x, y, curr_x, curr_y, width, height;
     private JButton quicksortBtn, mergesortBtn, bubblesortBtn, insertsortBtn, selectionsortBtn, sortorderBtn, startSearch;
     private boolean quickSort, mergeSort, bubbleSort, insertSort, selectSort; 
+    public int x, y, curr_x, curr_y, width, height;
     private ImagePanel imagePanel;
     private ColorChooser colorChooser;
     private ColorDisplay colorDisplay;
@@ -24,7 +24,6 @@ public class ControlPanel extends JPanel {
         setLayout(new GridLayout(0, 1));
         setBackground(new Color(70, 70, 70, 130));
         setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50, 0), 7));
-
         setVisible(true);
         setOpaque(true);
 
@@ -56,7 +55,6 @@ public class ControlPanel extends JPanel {
                 colorDisplay.curr_x += (x_offset);
                 colorDisplay.curr_y += (y_offset);
                 colorDisplay.setBounds(colorDisplay.curr_x, colorDisplay.curr_y, colorDisplay.width, colorDisplay.height);
-
                 imagePanel.repaint();
             }
         } );
@@ -425,9 +423,9 @@ class ColorDisplay extends JPanel {
 
     public ColorDisplay(ImagePanel imagePanel, ColorChooser colorChooser) {
 
-        width = (int)(imagePanel.getWidth() * .6);
+        width = (int)(imagePanel.getWidth() * .4);
         height = (int)(imagePanel.getHeight() * .45);
-        x = curr_x = (int)(imagePanel.getWidth() * (1 - .80) - 7 * 2);
+        x = curr_x = (int)(imagePanel.getWidth() * (1 - .60) - 7 * 2);
         y = curr_y = (int)(imagePanel.getHeight() * .20);
 
         image = new BufferedImage(width - borderWidth, (int)(height) - borderWidth, BufferedImage.TYPE_INT_ARGB);
