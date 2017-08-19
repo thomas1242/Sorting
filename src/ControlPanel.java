@@ -406,6 +406,7 @@ class ColorChooser extends JPanel {
         this.colorDisplay = popUp;
     }
 
+    @Override
     protected void paintComponent(Graphics g) {
         g.drawImage(image, 0, 0, null);
     }
@@ -545,6 +546,7 @@ class ColorDisplay extends JPanel {
         }
     }
 
+    @Override
     protected void paintComponent(Graphics g) {
         g.drawImage(image, 0, 0, null);
     }

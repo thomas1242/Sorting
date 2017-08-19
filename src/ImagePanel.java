@@ -28,6 +28,7 @@ public class ImagePanel extends JLayeredPane {
         drawAll();
     }
 
+    @Override
     protected void paintComponent(Graphics g) {
         g.drawImage(image, 0, 0, null);
     }
