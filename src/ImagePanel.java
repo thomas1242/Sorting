@@ -110,7 +110,6 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public void bubbleSort() {
-
         for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = cols.length - 1; j > i; j--) {
                 if(cols[j].val < cols[j - 1].val) {
@@ -121,11 +120,9 @@ public class ImagePanel extends JLayeredPane {
                 }
             }
         }
-
     }
 
     public void insertSort() {
-
          for(int i = 0; i < cols.length - 1;  i++) {
             for(int j = i + 1; j > 0; j--) {
                 while( j > 0 && cols[j].val < cols[j - 1].val ) {
@@ -137,11 +134,9 @@ public class ImagePanel extends JLayeredPane {
                 }
             }
         }
-
     }
 
     public void selectSort() {
-
         int index = 0;
         for(int i = 0; i < cols.length;  i++) {
             int min = Integer.MAX_VALUE;
@@ -264,19 +259,19 @@ public class ImagePanel extends JLayeredPane {
             }
         }
 
-        for (int i = 0; i < temp.length; i++)       // assign iterpolated colors
+        for (int i = 0; i < temp.length; i++)       // assign interpolated colors
             temp[i].color = colors[i];
     }
 
     public void animateRandomizeData() {
         new Thread( new Runnable() {
-                        public void run() { 
-                            int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
-                            for(int i = 0; i < cols.length / 2; i++) {
-                                drawCell(cols[i].color, i, cols[i], 0);
-                                drawCell(cols[cols.length - 1 - i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
-                            }
-                        }
+            public void run() {
+                int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
+                for(int i = 0; i < cols.length / 2; i++) {
+                    drawCell(cols[i].color, i, cols[i], 0);
+                    drawCell(cols[cols.length - 1 - i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
+                }
+            }
         } ).start(); 
     }
 

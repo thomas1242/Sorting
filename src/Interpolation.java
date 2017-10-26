@@ -1,6 +1,7 @@
 import java.awt.*;
 
 public class Interpolation {
+    private Interpolation() {}
 
     public static Color[] getColors(int start, int end, int length) {
         Color[] colors = new Color[length];
@@ -13,8 +14,7 @@ public class Interpolation {
         colors[0] = new Color(start);
         colors[colors.length - 1] = new Color(end);
 
-        // fill 1D array with interpolated Colors
-        for (int i = 1; i < colors.length - 1; i++) {
+        for (int i = 1; i < colors.length - 1; i++) {   // fill 1D array with interpolated Colors
             value_R += deltas[0];
             value_G += deltas[1];
             value_B += deltas[2];                    
@@ -45,5 +45,4 @@ public class Interpolation {
         double[] deltas = { delta_R, delta_G, delta_B };
         return deltas;
     }
-    
 }
