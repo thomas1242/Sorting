@@ -72,9 +72,7 @@ public class ControlPanel extends JPanel {
     private void runSelectedAlgorithm() {
         startSearchButton.setText( "Pause");
         startSearchButton.setForeground(  Color.RED  );
-        new Thread( 
-            new Runnable() {
-                public void run() { 
+        new Thread( () -> {
                     if(selectedAlgorithm.equals("Quicksort"))
                         imagePanel.quickSort();
                     else if (selectedAlgorithm.equals("Merge sort"))
@@ -86,8 +84,7 @@ public class ControlPanel extends JPanel {
                     else if (selectedAlgorithm.equals("Selection sort"))
                         imagePanel.selectSort();
                     setStartSearchButtonText("Start sort", new Color(0, 0, 0, 250));
-                }
-            } ).start(); 
+        }).start();
     }
 
     public void pauseSearch() {
@@ -124,70 +121,49 @@ public class ControlPanel extends JPanel {
         setLayout(new GridLayout(0, 1));
 
         startSearchButton = new JButton("Start sort");
-        startSearchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        startSearchButton.addActionListener(e -> {
                 if(startSearchButton.getText().equals("Start sort"))
                     runSelectedAlgorithm();
                 else if (startSearchButton.getText().equals( "Pause"))
                     pauseSearch();
                 else if (startSearchButton.getText().equals( "Resume"))
                     resumeSearch();
-            }
         });
         JButton randomizeDataButton = new JButton("Randomize Data");
-        randomizeDataButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        randomizeDataButton.addActionListener(e -> {
                 imagePanel.randomizeData();
                 imagePanel.animateRandomizeData();
                 // imagePanel.drawAll();
-            }
         });
         JButton quicksortBtn = new JButton("Quicksort");
-        quicksortBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        quicksortBtn.addActionListener(e -> {
                 clearAll();
                 setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
                 selectedAlgorithm = "Quicksort";
-            }
         });
         JButton mergesortBtn = new JButton("Merge sort");
-        mergesortBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        mergesortBtn.addActionListener(e -> {
                 clearAll();
                 setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
                 selectedAlgorithm = "Merge sort";
-            }
         });
         JButton bubblesortBtn = new JButton("Bubble sort");
-        bubblesortBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        bubblesortBtn.addActionListener(e -> {
                 clearAll();
                 setButtonFont(bubblesortBtn, new Color(0, 175, 0, 255), 15);
                 selectedAlgorithm = "Bubble sort";
-            }
         });
         JButton insertsortBtn = new JButton("Insertion sort");
-        insertsortBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        insertsortBtn.addActionListener(e -> {
                 clearAll();
                 setButtonFont(insertsortBtn, new Color(0, 175, 0, 255), 15);
                 selectedAlgorithm = "Insertion sort";
-            }
         });
         JButton selectionsortBtn = new JButton("Selection sort");
-        selectionsortBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        selectionsortBtn.addActionListener(e -> {
                 clearAll();
                 setButtonFont(selectionsortBtn, new Color(0, 175, 0, 255), 15);
                 selectedAlgorithm = "Selection sort";
-            }
         });
 
         algorithmSelectButtons = new LinkedList<>();
@@ -233,13 +209,10 @@ public class ControlPanel extends JPanel {
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffdddddd) );
         JSlider slider = new JSlider(1, 200, 30);
-        slider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
+        slider.addChangeListener(e -> {
                 speedLabel.setText(" " + 1000/slider.getValue() + " operations/sec");
                 imagePanel.setSpeed(slider.getValue());
-            }
-        });;
+        });
         slider.setMinorTickSpacing(1);
         slider.setSnapToTicks(true);
         speedSlider.add(speedLabel, BorderLayout.CENTER);
@@ -272,14 +245,11 @@ public class ControlPanel extends JPanel {
         imagePanel.drawAll();
         sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
         JSlider dslider = new JSlider(1, minWidth, minWidth - 10);
-        dslider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
+        dslider.addChangeListener(e -> {
                 imagePanel.setDataSize( 1 + dslider.getMaximum() - dslider.getValue() );
                 imagePanel.randomizeData();
                 sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
                 imagePanel.drawAll();
-            }
         });
         dslider.setMinorTickSpacing(1);
         dslider.setPaintTicks(true);

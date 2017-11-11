@@ -248,30 +248,26 @@ public class ImagePanel extends JLayeredPane {
         for(int i = 0; i < cols.length; i++) 
             temp[i] = cols[i];                      // copy random data to temp arr
 
-        for(int i = 0; i < temp.length - 1;  i++) { // sort temp arr 
-            for(int j = i + 1; j > 0; j--) {
+        for(int i = 0; i < temp.length - 1;  i++) // sort temp arr
+            for(int j = i + 1; j > 0; j--)
                 while( j > 0 && temp[j].val < temp[j - 1].val ) {
                     Cell t = temp[j];
                     temp[j] = temp[j-1];
                     temp[j-1] = t;
                     j--;
                 }
-            }
-        }
 
         for (int i = 0; i < temp.length; i++)       // assign interpolated colors
             temp[i].color = colors[i];
     }
 
     public void animateRandomizeData() {
-        new Thread( new Runnable() {
-            public void run() {
+        new Thread( () -> {
                 int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
                 for(int i = 0; i < cols.length / 2; i++) {
                     drawCell(cols[i].color, i, cols[i], 0);
                     drawCell(cols[cols.length - 1 - i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
                 }
-            }
         } ).start(); 
     }
 
