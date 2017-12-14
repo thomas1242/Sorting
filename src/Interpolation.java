@@ -11,16 +11,15 @@ public class Interpolation {
     public static Color[] getColors(int start, int end, int length) {
         Color[] colors = new Color[length];
 
-        double value_R = (start >> 16) & 0xFF;
-        double value_G = (start >> 8 ) & 0xFF;
-        double value_B = (start      ) & 0xFF;
-
-        // fill 1D array with interpolated Colors
         colors[0] = new Color(start);
         colors[colors.length - 1] = new Color(end);
         double[] deltas = getDeltas( start, end, colors.length - 1 );
 
-        for (int i = 1; i < colors.length - 1; i++) {
+        double value_R = (start >> 16) & 0xFF;
+        double value_G = (start >> 8 ) & 0xFF;
+        double value_B = (start      ) & 0xFF;
+
+        for (int i = 1; i < colors.length - 1; i++) {   // fill 1D array with interpolated colors
             value_R += deltas[0];
             value_G += deltas[1];
             value_B += deltas[2];
@@ -32,24 +31,13 @@ public class Interpolation {
     }
 
     private static double[] getDeltas(int start, int end, int n) {
-        double start_R, start_G, start_B,
-                end_R,   end_G,   end_B,
-                delta_R, delta_G, delta_B;
+        double delta_R, delta_G, delta_B;
 
-        end_R = (end >> 16) & 0xFF;
-        end_G = (end >> 8 ) & 0xFF;
-        end_B = (end      ) & 0xFF;
+        delta_R = (((end >> 16) & 0xFF) - ((start >> 16) & 0xFF)) / 1.0 / n;      
+        delta_G = (((end >> 8 ) & 0xFF) - ((start >> 8 ) & 0xFF)) / 1.0 / n;
+        delta_B = (((end >> 0 ) & 0xFF) - ((start      ) & 0xFF)) / 1.0 / n;
 
-        start_R = (start >> 16) & 0xFF;
-        start_G = (start >> 8 ) & 0xFF;
-        start_B = (start      ) & 0xFF;
-
-        delta_R = (end_R - start_R) / n;      
-        delta_G = (end_G - start_G) / n;
-        delta_B = (end_B - start_B) / n;
-
-        double[] deltas = { delta_R, delta_G, delta_B };
-        return deltas;
+        return new double[]{ delta_R, delta_G, delta_B };
     }
 
 }
