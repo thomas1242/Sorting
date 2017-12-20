@@ -73,17 +73,17 @@ public class ControlPanel extends JPanel {
         startSearchButton.setText( "Pause");
         startSearchButton.setForeground(  Color.RED  );
         new Thread( () -> {
-                    if(selectedAlgorithm.equals("Quicksort"))
-                        imagePanel.quickSort();
-                    else if (selectedAlgorithm.equals("Merge sort"))
-                        imagePanel.mergeSort();
-                    else if (selectedAlgorithm.equals("Bubble sort"))
-                        imagePanel.bubbleSort();
-                    else if (selectedAlgorithm.equals("Insertion sort"))
-                        imagePanel.insertSort();
-                    else if (selectedAlgorithm.equals("Selection sort"))
-                        imagePanel.selectSort();
-                    setStartSearchButtonText("Start sort", new Color(0, 0, 0, 250));
+            if(selectedAlgorithm.equals("Quicksort"))
+                imagePanel.quickSort();
+            else if (selectedAlgorithm.equals("Merge sort"))
+                imagePanel.mergeSort();
+            else if (selectedAlgorithm.equals("Bubble sort"))
+                imagePanel.bubbleSort();
+            else if (selectedAlgorithm.equals("Insertion sort"))
+                imagePanel.insertSort();
+            else if (selectedAlgorithm.equals("Selection sort"))
+                imagePanel.selectSort();
+            setStartSearchButtonText("Start sort", new Color(0, 0, 0, 250));
         }).start();
     }
 
@@ -122,48 +122,48 @@ public class ControlPanel extends JPanel {
 
         startSearchButton = new JButton("Start sort");
         startSearchButton.addActionListener(e -> {
-                if(startSearchButton.getText().equals("Start sort"))
-                    runSelectedAlgorithm();
-                else if (startSearchButton.getText().equals( "Pause"))
-                    pauseSearch();
-                else if (startSearchButton.getText().equals( "Resume"))
-                    resumeSearch();
+            if(startSearchButton.getText().equals("Start sort"))
+                runSelectedAlgorithm();
+            else if (startSearchButton.getText().equals( "Pause"))
+                pauseSearch();
+            else if (startSearchButton.getText().equals( "Resume"))
+                resumeSearch();
         });
         JButton randomizeDataButton = new JButton("Randomize Data");
         randomizeDataButton.addActionListener(e -> {
-                imagePanel.randomizeData();
-                imagePanel.animateRandomizeData();
-                // imagePanel.drawAll();
+            imagePanel.randomizeData();
+            imagePanel.animateRandomizeData();
+            // imagePanel.drawAll();
         });
         JButton quicksortBtn = new JButton("Quicksort");
         quicksortBtn.addActionListener(e -> {
-                clearAll();
-                setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
-                selectedAlgorithm = "Quicksort";
+            clearAll();
+            setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
+            selectedAlgorithm = "Quicksort";
         });
         JButton mergesortBtn = new JButton("Merge sort");
         mergesortBtn.addActionListener(e -> {
-                clearAll();
-                setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
-                selectedAlgorithm = "Merge sort";
+            clearAll();
+            setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
+            selectedAlgorithm = "Merge sort";
         });
         JButton bubblesortBtn = new JButton("Bubble sort");
         bubblesortBtn.addActionListener(e -> {
-                clearAll();
-                setButtonFont(bubblesortBtn, new Color(0, 175, 0, 255), 15);
-                selectedAlgorithm = "Bubble sort";
+            clearAll();
+            setButtonFont(bubblesortBtn, new Color(0, 175, 0, 255), 15);
+            selectedAlgorithm = "Bubble sort";
         });
         JButton insertsortBtn = new JButton("Insertion sort");
         insertsortBtn.addActionListener(e -> {
-                clearAll();
-                setButtonFont(insertsortBtn, new Color(0, 175, 0, 255), 15);
-                selectedAlgorithm = "Insertion sort";
+            clearAll();
+            setButtonFont(insertsortBtn, new Color(0, 175, 0, 255), 15);
+            selectedAlgorithm = "Insertion sort";
         });
         JButton selectionsortBtn = new JButton("Selection sort");
         selectionsortBtn.addActionListener(e -> {
-                clearAll();
-                setButtonFont(selectionsortBtn, new Color(0, 175, 0, 255), 15);
-                selectedAlgorithm = "Selection sort";
+            clearAll();
+            setButtonFont(selectionsortBtn, new Color(0, 175, 0, 255), 15);
+            selectedAlgorithm = "Selection sort";
         });
 
         algorithmSelectButtons = new LinkedList<>();
@@ -180,7 +180,6 @@ public class ControlPanel extends JPanel {
             button.setOpaque(false);
         }
 
-
         startSearchButton.setForeground(defaultTextColor);
         startSearchButton.setFont(new Font("plain", Font.BOLD, 13));
         startSearchButton.setOpaque(false);
@@ -196,8 +195,7 @@ public class ControlPanel extends JPanel {
         add(startSearchButton);
         add(randomizeDataButton);
         add(algorithmPanelLabel);
-        for(JButton button : algorithmSelectButtons)
-            add(button);
+        for(JButton button : algorithmSelectButtons) add(button);
         add(animationSpeedSlider);
         add(dataSetSizeSlider);
     }
@@ -210,8 +208,8 @@ public class ControlPanel extends JPanel {
         speedLabel.setForeground( new Color(0xffdddddd) );
         JSlider slider = new JSlider(1, 200, 30);
         slider.addChangeListener(e -> {
-                speedLabel.setText(" " + 1000/slider.getValue() + " operations/sec");
-                imagePanel.setSpeed(slider.getValue());
+            speedLabel.setText(" " + 1000/slider.getValue() + " operations/sec");
+            imagePanel.setSpeed(slider.getValue());
         });
         slider.setMinorTickSpacing(1);
         slider.setSnapToTicks(true);
@@ -237,19 +235,18 @@ public class ControlPanel extends JPanel {
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
         sizeLabel.setForeground( new Color(0xffdddddd) );
         int minWidth = 256;
-        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) {
+        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) 
             minWidth--;
-        }
         imagePanel.setDataSize( 12 );
         imagePanel.randomizeData();
         imagePanel.drawAll();
         sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
         JSlider dslider = new JSlider(1, minWidth, minWidth - 10);
         dslider.addChangeListener(e -> {
-                imagePanel.setDataSize( 1 + dslider.getMaximum() - dslider.getValue() );
-                imagePanel.randomizeData();
-                sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
-                imagePanel.drawAll();
+            imagePanel.setDataSize( 1 + dslider.getMaximum() - dslider.getValue() );
+            imagePanel.randomizeData();
+            sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
+            imagePanel.drawAll();
         });
         dslider.setMinorTickSpacing(1);
         dslider.setPaintTicks(true);
@@ -279,7 +276,6 @@ class ColorChooser extends JPanel {
     boolean isVisible = false;
     int startColor = 0xffcccccc, endColor = 0x0fFFD700;
 
-
     public ColorChooser(ImagePanel imagePanel) {
 
         setBackground(new Color(50, 50, 50, 140));
@@ -306,14 +302,8 @@ class ColorChooser extends JPanel {
                     x = (int)event.getPoint().getX();
                     y = (int)event.getPoint().getY();
                     if(x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth) {
-                        if(isVisible) {
-                            colorDisplay.setVisible(false);
-                            isVisible = false;
-                        }
-                        else {
-                            colorDisplay.setVisible(true);
-                            isVisible = true;
-                        }
+                        isVisible ^= true; 
+                        colorDisplay.setVisible(isVisible);
                     }
                     imagePanel.repaint();
                 }
@@ -378,6 +368,7 @@ class ColorDisplay extends JPanel {
     private Graphics2D g2d = null;
     private int borderWidth = 7;
     private JSlider r1, g1, b1, r2, g2, b2;
+    private List<JSlider> sliders;
 
     public ColorDisplay(ImagePanel imagePanel, ColorChooser colorChooser) {
 
@@ -398,32 +389,13 @@ class ColorDisplay extends JPanel {
 
         this.imagePanel = imagePanel;
         this.colorChooser = colorChooser;
-        r1 = new JSlider(JSlider.HORIZONTAL,0,255, 0xcc);
-        r1.setMajorTickSpacing(85);
-        r1.setPaintLabels(true);
-        g1 = new JSlider(JSlider.HORIZONTAL,0,255,0xcc);
-        g1.setMajorTickSpacing(85);
-        g1.setPaintLabels(true);
-        b1 = new JSlider(JSlider.HORIZONTAL,0,255,0xcc);
-        b1.setMajorTickSpacing(85);
-        b1.setPaintLabels(true);
 
-        r2 = new JSlider(JSlider.HORIZONTAL,0,255,0xFF);
-        r2.setMajorTickSpacing(85);
-        r2.setPaintLabels(true);
-        g2 = new JSlider(JSlider.HORIZONTAL,0,255,0xD7);
-        g2.setMajorTickSpacing(85);
-        g2.setPaintLabels(true);
-        b2 = new JSlider(JSlider.HORIZONTAL,0,255,0x00);
-        b2.setMajorTickSpacing(85);
-        b2.setPaintLabels(true);
-
-        r1.setFont(new Font("plain", Font.BOLD, 13));
-        r2.setFont(new Font("plain", Font.BOLD, 13));
-        g1.setFont(new Font("plain", Font.BOLD, 13));
-        g2.setFont(new Font("plain", Font.BOLD, 13));
-        b1.setFont(new Font("plain", Font.BOLD, 13));
-        b2.setFont(new Font("plain", Font.BOLD, 13));
+        r1 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc);
+        g1 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc);
+        b1 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc);
+        r2 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xFF);
+        g2 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xD7);
+        b2 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0x00);
 
         r1.setForeground(Color.RED);
         r2.setForeground(Color.RED);
@@ -432,20 +404,23 @@ class ColorDisplay extends JPanel {
         b1.setForeground(Color.BLUE);
         b2.setForeground(Color.BLUE);
 
-        Event e = new Event();
-        r1.addChangeListener(e);
-        g1.addChangeListener(e);
-        b1.addChangeListener(e);
-        r2.addChangeListener(e);
-        g2.addChangeListener(e);
-        b2.addChangeListener(e);
+        sliders = new LinkedList<>();
+        sliders.add(r1);
+        sliders.add(r2);
+        sliders.add(g1);
+        sliders.add(g2);
+        sliders.add(b1);
+        sliders.add(b2);
 
-        this.add(r1);
-        this.add(r2);
-        this.add(g1);
-        this.add(g2);
-        this.add(b1);
-        this.add(b2);
+        Event e = new Event();
+        for (JSlider slider : sliders) {
+            slider.addChangeListener(e);
+            slider.setMajorTickSpacing(85);
+            slider.setPaintLabels(true);
+            slider.setFont(new Font("plain", Font.BOLD, 13));
+            add(slider);
+        }
+
         drawImage();
 
         addMouseListener( new MouseAdapter() {
@@ -471,23 +446,15 @@ class ColorDisplay extends JPanel {
     }
 
     public void drawImage() {
-        int rValue = r1.getValue();
-        int gValue = g1.getValue();
-        int bValue = b1.getValue();
-
-        int rValue2 = r2.getValue();
-        int gValue2 = g2.getValue();
-        int bValue2 = b2.getValue();
-
-        int start = (0xFF000000) | ((int)rValue << 16) | ((int)gValue << 8) | (int)bValue;
-        int end = (0xFF000000) | ((int)rValue2 << 16) | ((int)gValue2 << 8) | (int)bValue2;
+        int start = 0xFF000000 | r1.getValue() << 16 | g1.getValue() << 8 | b1.getValue();
+        int end   = 0xFF000000 | r2.getValue() << 16 | g2.getValue() << 8 | b2.getValue();
 
         Color[] colors = Interpolation.getColors( start, end, image.getWidth() );
-
         for (int i = 0; i < image.getWidth(); i++) {
             g2d.setColor(colors[i]);
             g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
         }
+
         colorChooser.setColors(start, end);
         colorChooser.drawImage();
         imagePanel.setColors(start, end);

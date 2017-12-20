@@ -28,11 +28,6 @@ public class ImagePanel extends JLayeredPane {
         drawAll();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        g.drawImage(image, 0, 0, null);
-    }
-
     public void quickSort() {
         quickSort(cols, 0, cols.length - 1);
     }
@@ -291,6 +286,11 @@ public class ImagePanel extends JLayeredPane {
     public void setColors(int start, int end) {
         this.startColor = start;
         this.endColor = end;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, null);
     }
 
     private static class Cell {
