@@ -202,22 +202,24 @@ public class ControlPanel extends JPanel {
 
     private JPanel createAnimationSpeedSlider() {
         JPanel speedSlider = new JPanel();
-        speedSlider.setLayout(new GridLayout(0, 1));
-        JLabel speedLabel = new JLabel(" " + 1000/30 + " operations/sec");
+        
+        JLabel speedLabel = new JLabel(" " + 1000/171 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
         speedLabel.setForeground( new Color(0xffdddddd) );
+
         JSlider slider = new JSlider(1, 200, 30);
         slider.addChangeListener(e -> {
-            speedLabel.setText(" " + 1000/slider.getValue() + " operations/sec");
-            imagePanel.setSpeed(slider.getValue());
+            speedLabel.setText(" " + (1000 / (1 + slider.getMaximum() - slider.getValue())) + " operations/sec");
+            imagePanel.setSpeed( 1 + slider.getMaximum() - slider.getValue() );
         });
         slider.setMinorTickSpacing(1);
         slider.setSnapToTicks(true);
+
+        speedSlider.setLayout(new GridLayout(0, 1));
         speedSlider.add(speedLabel, BorderLayout.CENTER);
         speedSlider.add(slider, BorderLayout.SOUTH);
         speedSlider.setOpaque(false);
         speedSlider.setVisible(true);
-
         return speedSlider;
     }
 
@@ -229,18 +231,19 @@ public class ControlPanel extends JPanel {
     }
 
     private JPanel createDataSetSizeSlider() {
-        JPanel dataSetSizeSlider = new JPanel();
-        dataSetSizeSlider.setLayout(new GridLayout(0, 1));
-        JLabel sizeLabel = new JLabel(" " + (int)(imagePanel.getImageWidth() * 0.9) / 75 + " data points");
-        sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
-        sizeLabel.setForeground( new Color(0xffdddddd) );
+        JPanel dataSetSizeSlider = new JPanel( new GridLayout(0, 1) );
+        
         int minWidth = 256;
-        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) 
-            minWidth--;
+        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) minWidth--;
         imagePanel.setDataSize( 12 );
         imagePanel.randomizeData();
         imagePanel.drawAll();
+
+        JLabel sizeLabel = new JLabel(" " + (int)(imagePanel.getImageWidth() * 0.9) / 75 + " data points");
+        sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
+        sizeLabel.setForeground( new Color(0xffdddddd) );
         sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
+        
         JSlider dslider = new JSlider(1, minWidth, minWidth - 10);
         dslider.addChangeListener(e -> {
             imagePanel.setDataSize( 1 + dslider.getMaximum() - dslider.getValue() );
@@ -251,11 +254,11 @@ public class ControlPanel extends JPanel {
         dslider.setMinorTickSpacing(1);
         dslider.setPaintTicks(true);
         dslider.setSnapToTicks(true);
+
         dataSetSizeSlider.add(sizeLabel, BorderLayout.CENTER);
         dataSetSizeSlider.add(dslider, BorderLayout.SOUTH);
         dataSetSizeSlider.setOpaque(false);
         dataSetSizeSlider.setVisible(true);
-
         return dataSetSizeSlider;
     }
 
@@ -267,35 +270,27 @@ public class ControlPanel extends JPanel {
 
 class ColorChooser extends JPanel {
 
-    public int x, y, curr_x, curr_y, width, height;
     private BufferedImage image = null;
     private Graphics2D g2d = null;
-    private int borderWidth = 7;
     private ControlPanel controlPanel;
     private ColorDisplay colorDisplay;
-    boolean isVisible = false;
     int startColor = 0xffcccccc, endColor = 0x0fFFD700;
+    public int x, y, curr_x, curr_y, width, height;
+    private int borderWidth = 7;
+    boolean isVisible = false;
 
     public ColorChooser(ImagePanel imagePanel) {
 
-        setBackground(new Color(50, 50, 50, 140));
         int width = (int)(imagePanel.getWidth() * .175);
         int height = (int)(imagePanel.getHeight() * .15);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
         y = curr_y = (int)(imagePanel.getHeight() * .20) + height * 3 + 7 * 2;
+        setBounds(curr_x, curr_y, width, (int)(height / 2.5));
 
         image = new BufferedImage(width - borderWidth, (int)(height / 2.5) - borderWidth, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
-        setBounds(curr_x, curr_y, width, (int)(height / 2.5));
         drawImage();
 
-        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), borderWidth));
-        setBackground(new Color(70, 70, 70, 130));
-        setVisible(true);
-        setOpaque(true);
-
-        this.width = image.getWidth() + borderWidth;
-        this.height = (int)(height / 2.5);
         addMouseListener( new MouseAdapter() {
             public void mousePressed( MouseEvent event ) {
                 if(event.getButton() == MouseEvent.BUTTON1) {
@@ -308,38 +303,22 @@ class ColorChooser extends JPanel {
                     imagePanel.repaint();
                 }
             }
-        } );
+        });
 
-        addMouseMotionListener( new MouseMotionAdapter() {
-            public void mouseDragged(MouseEvent event) {
-                int x_offset = (int)event.getPoint().getX() - x;
-                int y_offset = (int)event.getPoint().getY() - y;
-
-                curr_x += (x_offset);
-                curr_y += (y_offset);
-                setBounds(curr_x, curr_y, width, (int)(height / 2.5));
-
-                controlPanel.curr_x += (x_offset);
-                controlPanel.curr_y += (y_offset);
-                controlPanel.setBounds(controlPanel.curr_x, controlPanel.curr_y, controlPanel.width, controlPanel.height);
-
-                colorDisplay.curr_x += (x_offset);
-                colorDisplay.curr_y += (y_offset);
-                colorDisplay.setBounds(colorDisplay.curr_x, colorDisplay.curr_y, colorDisplay.width, colorDisplay.height);
-
-                imagePanel.repaint();
-            }
-        } );
+        this.width = image.getWidth() + borderWidth;
+        this.height = (int)(height / 2.5);
+        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), borderWidth));
+        setBackground(new Color(70, 70, 70, 130));
+        setVisible(true);
+        setOpaque(true);
     }
 
     public void drawImage() {
         Color[] colors = Interpolation.getColors(startColor, endColor, image.getWidth() );
-
         for (int i = 0; i < image.getWidth(); i++) {
             g2d.setColor(colors[i]);
             g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
         }
-
         repaint();
     }
 
@@ -361,78 +340,77 @@ class ColorChooser extends JPanel {
 
 class ColorDisplay extends JPanel {
 
-    public int x, y, curr_x, curr_y, width, height;
     private ImagePanel imagePanel;
     private ColorChooser colorChooser;
-    private BufferedImage image = null;
-    private Graphics2D g2d = null;
+    private BufferedImage image;
+    private Graphics2D g2d;
+    private JSlider[] sliders;
+    public int x, y, curr_x, curr_y, width, height;
     private int borderWidth = 7;
-    private JSlider r1, g1, b1, r2, g2, b2;
-    private List<JSlider> sliders;
 
     public ColorDisplay(ImagePanel imagePanel, ColorChooser colorChooser) {
-
-        width = (int)(imagePanel.getWidth() * .4);
-        height = (int)(imagePanel.getHeight() * .45);
-        x = curr_x = (int)(imagePanel.getWidth() * (1 - .60) - 7 * 2);
-        y = curr_y = (int)(imagePanel.getHeight() * .20);
+        this.imagePanel = imagePanel;
+        this.colorChooser = colorChooser;
+        setPosition();
 
         image = new BufferedImage(width - borderWidth, (int)(height) - borderWidth, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
 
-        setBounds(curr_x, curr_y, width, height);
-        setLayout(new GridLayout(0, 2));
-        setBackground(new Color(70, 70, 70, 130));
-        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), 7));
+        addComponents();
+        addMouseListeners();
+        drawBackground();
+        drawImage();
         setVisible(false);
         setOpaque(true);
+    }
 
-        this.imagePanel = imagePanel;
-        this.colorChooser = colorChooser;
+    private void setPosition() {
+        width = (int)(imagePanel.getWidth() * .4);
+        height = (int)(imagePanel.getHeight() * .45);
+        x = curr_x = (int)(imagePanel.getWidth() * (1 - .60) - 7 * 2);
+        y = curr_y = (int)(imagePanel.getHeight() * .20);
+        setBounds(curr_x, curr_y, width, height);
+    }
 
-        r1 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc);
-        g1 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc);
-        b1 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc);
-        r2 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xFF);
-        g2 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0xD7);
-        b2 = new JSlider(JSlider.HORIZONTAL, 0, 255, 0x00);
+    private void drawBackground() {
+        setBackground( new Color(70, 70, 70, 130) );
+        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), 7));
+    }
 
-        r1.setForeground(Color.RED);
-        r2.setForeground(Color.RED);
-        g1.setForeground(Color.GREEN);
-        g2.setForeground(Color.GREEN);
-        b1.setForeground(Color.BLUE);
-        b2.setForeground(Color.BLUE);
+    private void addComponents() {
+        setLayout(new GridLayout(0, 2));
 
-        sliders = new LinkedList<>();
-        sliders.add(r1);
-        sliders.add(r2);
-        sliders.add(g1);
-        sliders.add(g2);
-        sliders.add(b1);
-        sliders.add(b2);
+        sliders = new JSlider[]{    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc),
+                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xFF),
+                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xCC),
+                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xD7),
+                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xCC),
+                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0x00)   };
 
-        Event e = new Event();
+        sliders[0].setForeground(Color.RED);
+        sliders[1].setForeground(Color.RED);
+        sliders[2].setForeground(Color.GREEN);
+        sliders[3].setForeground(Color.GREEN);
+        sliders[4].setForeground(Color.BLUE);
+        sliders[5].setForeground(Color.BLUE);
+
         for (JSlider slider : sliders) {
-            slider.addChangeListener(e);
+            slider.addChangeListener(new Event());
             slider.setMajorTickSpacing(85);
             slider.setPaintLabels(true);
             slider.setFont(new Font("plain", Font.BOLD, 13));
             add(slider);
         }
+    }
 
-        drawImage();
-
-        addMouseListener( new MouseAdapter() {
+    private void addMouseListeners() {
+         addMouseListener( new MouseAdapter() {
             public void mousePressed( MouseEvent event ) {
-                if(event.getButton() == MouseEvent.BUTTON1) {
-                    x = (int)event.getPoint().getX();
-                    y = (int)event.getPoint().getY();
-                    imagePanel.repaint();
-                }
+                x = (int)event.getPoint().getX();
+                y = (int)event.getPoint().getY();
+                imagePanel.repaint();
             }
         } );
-
         addMouseMotionListener( new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent event) {
                 int x_offset = (int)event.getPoint().getX() - x;
@@ -445,9 +423,9 @@ class ColorDisplay extends JPanel {
         } );
     }
 
-    public void drawImage() {
-        int start = 0xFF000000 | r1.getValue() << 16 | g1.getValue() << 8 | b1.getValue();
-        int end   = 0xFF000000 | r2.getValue() << 16 | g2.getValue() << 8 | b2.getValue();
+    private void drawImage() {
+        int start = 0xFF000000 | sliders[0].getValue() << 16 | sliders[2].getValue() << 8 | sliders[4].getValue();
+        int end   = 0xFF000000 | sliders[1].getValue() << 16 | sliders[3].getValue() << 8 | sliders[5].getValue();
 
         Color[] colors = Interpolation.getColors( start, end, image.getWidth() );
         for (int i = 0; i < image.getWidth(); i++) {

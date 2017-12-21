@@ -6,6 +6,7 @@ import java.util.Random;
 public class ImagePanel extends JLayeredPane {
     private BufferedImage image = null; 
     private Graphics2D g2d = null;
+    
     private Cell[] cols;
     private int numCells;
     private int height, width;  
@@ -258,11 +259,11 @@ public class ImagePanel extends JLayeredPane {
 
     public void animateRandomizeData() {
         new Thread( () -> {
-                int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
-                for(int i = 0; i < cols.length / 2; i++) {
-                    drawCell(cols[i].color, i, cols[i], 0);
-                    drawCell(cols[cols.length - 1 - i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
-                }
+            int delay = 1000 / numCells > 0 ? 1000 / numCells : 1;
+            for(int i = 0; i < cols.length / 2; i++) {
+                drawCell(cols[i].color, i, cols[i], 0);
+                drawCell(cols[cols.length - 1 - i].color, cols.length - 1 - i, cols[cols.length - 1 - i], delay);
+            }
         } ).start(); 
     }
 
