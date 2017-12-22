@@ -2,17 +2,18 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
 import java.util.Random;
+import java.util.*;
 
 public class ImagePanel extends JLayeredPane {
-    private BufferedImage image = null; 
-    private Graphics2D g2d = null;
     
+    private BufferedImage image; 
+    private Graphics2D g2d;
     private Cell[] cols;
     private int numCells;
-    private int height, width;  
+    private int height, width;
     private int animationSpeed;
     private int startColor = 0xffcccccc, endColor = 0x0fFFD700;
-    private Color highlightColor = new Color(255, 0, 0, 200);
+    private Color highlightColor = new Color(0xFFC80000);
 
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
@@ -22,7 +23,7 @@ public class ImagePanel extends JLayeredPane {
         addComponents();
         animationSpeed = 30;
         numCells = (int)(image.getWidth() * 0.9) / 12;
-        this.width = 12;  
+        this.width = 12; 
         this.height = (image.getHeight() - 2 * (int)(image.getWidth() * 0.05));    
 
         randomizeData();
@@ -136,7 +137,7 @@ public class ImagePanel extends JLayeredPane {
         int index = 0;
         for(int i = 0; i < cols.length;  i++) {
             int min = Integer.MAX_VALUE;
-            for(int j = i; j < cols.length;  j++) { // find min
+            for(int j = i; j < cols.length;  j++) { 
                 if(cols[j].val < min) {
                     drawCell(cols[index].color, index, cols[index], 0);
                     index = j;
@@ -153,19 +154,9 @@ public class ImagePanel extends JLayeredPane {
     }
 
     private void swap(int index1, int index2) {
-        Cell temp = cols[index1];           // swap the two elements
+        Cell temp = cols[index1];         
         cols[index1] = cols[index2];
         cols[index2] = temp;
-    }
-
-    private void drawBackground(Color color) {
-        g2d.setColor( color );        // draw background
-        g2d.fillRect((int)(width * 0.05), (int)(width * 0.05) + 1, (int)(width * 0.9), height - 1);
-    }
-
-    private void drawBorder(Color color) {
-        g2d.setColor( Color.BLACK );                  // draw border
-        g2d.drawRect((int)(width * 0.05), (int)(width * 0.05), (int)(width * 0.9), height);
     }
 
     public void drawAll() {
@@ -233,26 +224,17 @@ public class ImagePanel extends JLayeredPane {
             int val = rand.nextInt(2 * numCells + 1);
             cols[i] = new Cell(val, (int)(height * val / (2 * numCells + 1)));
         }
-
         assignColors();
     }
 
     public void assignColors() {
-        Color[] colors = Interpolation.getColors(startColor, endColor, numCells );
-
         Cell[] temp = new Cell[cols.length];
         for(int i = 0; i < cols.length; i++) 
-            temp[i] = cols[i];                      // copy random data to temp arr
+            temp[i] = cols[i];                 
+                 
+        Arrays.sort(temp, (Cell a, Cell b) -> a.val - b.val );
 
-        for(int i = 0; i < temp.length - 1;  i++) // sort temp arr
-            for(int j = i + 1; j > 0; j--)
-                while( j > 0 && temp[j].val < temp[j - 1].val ) {
-                    Cell t = temp[j];
-                    temp[j] = temp[j-1];
-                    temp[j-1] = t;
-                    j--;
-                }
-
+        Color[] colors = Interpolation.getColors(startColor, endColor, numCells );
         for (int i = 0; i < temp.length; i++)       // assign interpolated colors
             temp[i].color = colors[i];
     }
@@ -273,7 +255,7 @@ public class ImagePanel extends JLayeredPane {
 
     public void setDataSize(int pixelWidth) {
         numCells = (int)(image.getWidth() * 0.9) / pixelWidth;
-        this.width = pixelWidth; // width of column 
+        this.width = pixelWidth;  // column width
     }
 
     public void setSpeed(int fps) {
@@ -285,8 +267,9 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public void setColors(int start, int end) {
-        this.startColor = start;
-        this.endColor = end;
+        startColor = start;
+        endColor = end;
+        assignColors();
     }
 
     @Override

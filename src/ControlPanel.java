@@ -12,9 +12,9 @@ public class ControlPanel extends JPanel {
     private List<JButton> algorithmSelectButtons;
     private String selectedAlgorithm = "Quicksort";
     public int x, y, curr_x, curr_y, width, height;
-    private ImagePanel imagePanel;
     private ColorChooser colorChooser;
     private ColorDisplay colorDisplay;
+    private ImagePanel imagePanel;
 
     public ControlPanel(ImagePanel imagePanel) {
         this.imagePanel = imagePanel;
@@ -118,63 +118,33 @@ public class ControlPanel extends JPanel {
     }
 
     private void addComponents() {
-        setLayout(new GridLayout(0, 1));
-
         startSearchButton = new JButton("Start sort");
         startSearchButton.addActionListener(e -> {
-            if(startSearchButton.getText().equals("Start sort"))
+            String s = startSearchButton.getText();
+            if(s.equals("Start sort"))
                 runSelectedAlgorithm();
-            else if (startSearchButton.getText().equals( "Pause"))
+            else if (s.equals("Pause"))
                 pauseSearch();
-            else if (startSearchButton.getText().equals( "Resume"))
+            else if (s.equals("Resume"))
                 resumeSearch();
         });
+
         JButton randomizeDataButton = new JButton("Randomize Data");
         randomizeDataButton.addActionListener(e -> {
             imagePanel.randomizeData();
             imagePanel.animateRandomizeData();
-            // imagePanel.drawAll();
-        });
-        JButton quicksortBtn = new JButton("Quicksort");
-        quicksortBtn.addActionListener(e -> {
-            clearAll();
-            setButtonFont(quicksortBtn, new Color(0, 175, 0, 255), 15);
-            selectedAlgorithm = "Quicksort";
-        });
-        JButton mergesortBtn = new JButton("Merge sort");
-        mergesortBtn.addActionListener(e -> {
-            clearAll();
-            setButtonFont(mergesortBtn, new Color(0, 175, 0, 255), 15);
-            selectedAlgorithm = "Merge sort";
-        });
-        JButton bubblesortBtn = new JButton("Bubble sort");
-        bubblesortBtn.addActionListener(e -> {
-            clearAll();
-            setButtonFont(bubblesortBtn, new Color(0, 175, 0, 255), 15);
-            selectedAlgorithm = "Bubble sort";
-        });
-        JButton insertsortBtn = new JButton("Insertion sort");
-        insertsortBtn.addActionListener(e -> {
-            clearAll();
-            setButtonFont(insertsortBtn, new Color(0, 175, 0, 255), 15);
-            selectedAlgorithm = "Insertion sort";
-        });
-        JButton selectionsortBtn = new JButton("Selection sort");
-        selectionsortBtn.addActionListener(e -> {
-            clearAll();
-            setButtonFont(selectionsortBtn, new Color(0, 175, 0, 255), 15);
-            selectedAlgorithm = "Selection sort";
         });
 
         algorithmSelectButtons = new LinkedList<>();
-        algorithmSelectButtons.add(mergesortBtn);
-        algorithmSelectButtons.add(quicksortBtn);
-        algorithmSelectButtons.add(bubblesortBtn);
-        algorithmSelectButtons.add(insertsortBtn);
-        algorithmSelectButtons.add(selectionsortBtn);
+        algorithmSelectButtons.add(new JButton("Merge sort"));
+        algorithmSelectButtons.add(new JButton("Quicksort"));
+        algorithmSelectButtons.add(new JButton("Bubble sort"));
+        algorithmSelectButtons.add(new JButton("Insertion sort"));
+        algorithmSelectButtons.add(new JButton("Selection sort"));
 
         Color defaultTextColor = new Color(0, 0, 0, 255);
         for(JButton button : algorithmSelectButtons) {
+            button.addActionListener(e -> selectAlgorithm(button));
             button.setForeground(defaultTextColor);
             button.setFont(new Font("plain", Font.BOLD, 13));
             button.setOpaque(false);
@@ -183,7 +153,6 @@ public class ControlPanel extends JPanel {
         startSearchButton.setForeground(defaultTextColor);
         startSearchButton.setFont(new Font("plain", Font.BOLD, 13));
         startSearchButton.setOpaque(false);
-
         randomizeDataButton.setForeground(defaultTextColor);
         randomizeDataButton.setFont(new Font("plain", Font.BOLD, 15));
         randomizeDataButton.setOpaque(false);
@@ -192,12 +161,19 @@ public class ControlPanel extends JPanel {
         JPanel animationSpeedSlider = createAnimationSpeedSlider();
         JPanel dataSetSizeSlider    = createDataSetSizeSlider();
 
+        setLayout(new GridLayout(0, 1));
         add(startSearchButton);
         add(randomizeDataButton);
         add(algorithmPanelLabel);
         for(JButton button : algorithmSelectButtons) add(button);
         add(animationSpeedSlider);
         add(dataSetSizeSlider);
+    }
+
+    private void selectAlgorithm(JButton button) {
+        this.selectedAlgorithm = button.getText();
+        clearAll();
+        button.setForeground( new Color(0, 175, 0, 255) );
     }
 
     private JPanel createAnimationSpeedSlider() {
@@ -244,19 +220,19 @@ public class ControlPanel extends JPanel {
         sizeLabel.setForeground( new Color(0xffdddddd) );
         sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
         
-        JSlider dslider = new JSlider(1, minWidth, minWidth - 10);
-        dslider.addChangeListener(e -> {
-            imagePanel.setDataSize( 1 + dslider.getMaximum() - dslider.getValue() );
+        JSlider slider = new JSlider(1, minWidth, minWidth - 10);
+        slider.addChangeListener(e -> {
+            imagePanel.setDataSize( 1 + slider.getMaximum() - slider.getValue() );
             imagePanel.randomizeData();
             sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
             imagePanel.drawAll();
         });
-        dslider.setMinorTickSpacing(1);
-        dslider.setPaintTicks(true);
-        dslider.setSnapToTicks(true);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setSnapToTicks(true);
 
         dataSetSizeSlider.add(sizeLabel, BorderLayout.CENTER);
-        dataSetSizeSlider.add(dslider, BorderLayout.SOUTH);
+        dataSetSizeSlider.add(slider, BorderLayout.SOUTH);
         dataSetSizeSlider.setOpaque(false);
         dataSetSizeSlider.setVisible(true);
         return dataSetSizeSlider;
@@ -270,11 +246,11 @@ public class ControlPanel extends JPanel {
 
 class ColorChooser extends JPanel {
 
-    private BufferedImage image = null;
-    private Graphics2D g2d = null;
+    private BufferedImage image;
+    private Graphics2D g2d;
     private ControlPanel controlPanel;
     private ColorDisplay colorDisplay;
-    int startColor = 0xffcccccc, endColor = 0x0fFFD700;
+    private int startColor = 0xffcccccc, endColor = 0x0fFFD700;
     public int x, y, curr_x, curr_y, width, height;
     private int borderWidth = 7;
     boolean isVisible = false;
@@ -360,8 +336,8 @@ class ColorDisplay extends JPanel {
         addMouseListeners();
         drawBackground();
         drawImage();
-        setVisible(false);
         setOpaque(true);
+        setVisible(false);
     }
 
     private void setPosition() {
@@ -436,7 +412,6 @@ class ColorDisplay extends JPanel {
         colorChooser.setColors(start, end);
         colorChooser.drawImage();
         imagePanel.setColors(start, end);
-        imagePanel.assignColors();
         imagePanel.drawAll();
         repaint();
     }
