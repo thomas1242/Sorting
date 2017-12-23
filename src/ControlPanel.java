@@ -3,8 +3,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.event.*;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.LinkedList;
 
 public class ControlPanel extends JPanel {
 
@@ -18,7 +18,7 @@ public class ControlPanel extends JPanel {
 
     public ControlPanel(ImagePanel imagePanel) {
         this.imagePanel = imagePanel;
-        setInitialPosition();
+        setPositionAndSize();
         addComponents();
         addMouseListeners();
         drawBackground();
@@ -26,7 +26,7 @@ public class ControlPanel extends JPanel {
         setOpaque(true);
     }
 
-    private void setInitialPosition() {
+    private void setPositionAndSize() {
         width = (int)(imagePanel.getWidth() * .175);
         height = (int)(imagePanel.getHeight() * .45);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
@@ -71,7 +71,7 @@ public class ControlPanel extends JPanel {
 
     private void runSelectedAlgorithm() {
         startSearchButton.setText( "Pause");
-        startSearchButton.setForeground(  Color.RED  );
+        startSearchButton.setForeground( Color.RED );
         new Thread( () -> {
             if(selectedAlgorithm.equals("Quicksort"))
                 imagePanel.quickSort();
@@ -88,14 +88,14 @@ public class ControlPanel extends JPanel {
     }
 
     public void pauseSearch() {
-        startSearchButton.setText( "Resume");
-        startSearchButton.setForeground(  new Color(0, 175, 0, 255)  );
+        startSearchButton.setText("Resume");
+        startSearchButton.setForeground( new Color(0, 175, 0, 255) );
         // imagePanel.pause();
     }
 
     public void resumeSearch() {
-        startSearchButton.setText( "Pause");
-        startSearchButton.setForeground(  Color.RED  );
+        startSearchButton.setText("Pause");
+        startSearchButton.setForeground( Color.RED );
         // imagePanel.resume();
     }
 
@@ -113,7 +113,7 @@ public class ControlPanel extends JPanel {
     }
 
     private void setButtonFont(JButton button, Color color, int size) {
-        button.setForeground(  color  );
+        button.setForeground( color );
         button.setFont(new Font("plain", Font.BOLD, size));
     }
 
@@ -211,8 +211,7 @@ public class ControlPanel extends JPanel {
         
         int minWidth = 256;
         while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) minWidth--;
-        imagePanel.setDataSize( 12 );
-        imagePanel.randomizeData();
+        imagePanel.setDataWidth( 12 );
         imagePanel.drawAll();
 
         JLabel sizeLabel = new JLabel(" " + (int)(imagePanel.getImageWidth() * 0.9) / 75 + " data points");
@@ -222,8 +221,7 @@ public class ControlPanel extends JPanel {
         
         JSlider slider = new JSlider(1, minWidth, minWidth - 10);
         slider.addChangeListener(e -> {
-            imagePanel.setDataSize( 1 + slider.getMaximum() - slider.getValue() );
-            imagePanel.randomizeData();
+            imagePanel.setDataWidth( 1 + slider.getMaximum() - slider.getValue() );
             sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
             imagePanel.drawAll();
         });
@@ -260,7 +258,7 @@ class ColorChooser extends JPanel {
         int width = (int)(imagePanel.getWidth() * .175);
         int height = (int)(imagePanel.getHeight() * .15);
         x = curr_x = (int)(imagePanel.getWidth() * (1 - .2));
-        y = curr_y = (int)(imagePanel.getHeight() * .20) + height * 3 + 7 * 2;
+        y = curr_y = (int)(imagePanel.getHeight() * .20) + height * 3 + borderWidth * 2;
         setBounds(curr_x, curr_y, width, (int)(height / 2.5));
 
         image = new BufferedImage(width - borderWidth, (int)(height / 2.5) - borderWidth, BufferedImage.TYPE_INT_ARGB);
@@ -343,39 +341,31 @@ class ColorDisplay extends JPanel {
     private void setPosition() {
         width = (int)(imagePanel.getWidth() * .4);
         height = (int)(imagePanel.getHeight() * .45);
-        x = curr_x = (int)(imagePanel.getWidth() * (1 - .60) - 7 * 2);
+        x = curr_x = (int)(imagePanel.getWidth() * (1 - .60) - borderWidth * 2);
         y = curr_y = (int)(imagePanel.getHeight() * .20);
         setBounds(curr_x, curr_y, width, height);
     }
 
     private void drawBackground() {
         setBackground( new Color(70, 70, 70, 130) );
-        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), 7));
+        setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), borderWidth));
     }
 
     private void addComponents() {
         setLayout(new GridLayout(0, 2));
 
-        sliders = new JSlider[]{    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xcc),
-                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xFF),
-                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xCC),
-                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xD7),
-                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0xCC),
-                                    new JSlider(JSlider.HORIZONTAL, 0, 255, 0x00)   };
+        sliders = new JSlider[6];
+        int[] vals = new int[]{0xCC, 0xFF, 0xCC, 0xD7, 0xCC, 0x00};
+        Color[] textColors = new Color[]{Color.RED, Color.RED, Color.GREEN, Color.GREEN, Color.BLUE, Color.BLUE};
 
-        sliders[0].setForeground(Color.RED);
-        sliders[1].setForeground(Color.RED);
-        sliders[2].setForeground(Color.GREEN);
-        sliders[3].setForeground(Color.GREEN);
-        sliders[4].setForeground(Color.BLUE);
-        sliders[5].setForeground(Color.BLUE);
-
-        for (JSlider slider : sliders) {
-            slider.addChangeListener(new Event());
-            slider.setMajorTickSpacing(85);
-            slider.setPaintLabels(true);
-            slider.setFont(new Font("plain", Font.BOLD, 13));
-            add(slider);
+        for (int i = 0; i < sliders.length; i++) {
+            sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 255, vals[i]);
+            sliders[i].setForeground(textColors[i]);
+            sliders[i].addChangeListener(new Event());
+            sliders[i].setMajorTickSpacing(85);
+            sliders[i].setPaintLabels(true);
+            sliders[i].setFont(new Font("plain", Font.BOLD, 13));
+            add(sliders[i]);
         }
     }
 
