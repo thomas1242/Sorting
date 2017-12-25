@@ -118,6 +118,8 @@ public class ControlPanel extends JPanel {
     }
 
     private void addComponents() {
+        Color defaultTextColor = new Color(0, 0, 0, 255);
+        
         startSearchButton = new JButton("Start sort");
         startSearchButton.addActionListener(e -> {
             String s = startSearchButton.getText();
@@ -128,34 +130,30 @@ public class ControlPanel extends JPanel {
             else if (s.equals("Resume"))
                 resumeSearch();
         });
+        startSearchButton.setForeground(defaultTextColor);
+        startSearchButton.setFont(new Font("plain", Font.BOLD, 13));
+        startSearchButton.setOpaque(false);
 
         JButton randomizeDataButton = new JButton("Randomize Data");
         randomizeDataButton.addActionListener(e -> {
             imagePanel.randomizeData();
             imagePanel.animateRandomizeData();
         });
+        randomizeDataButton.setForeground(defaultTextColor);
+        randomizeDataButton.setFont(new Font("plain", Font.BOLD, 15));
+        randomizeDataButton.setOpaque(false);
 
+        String[] buttonText = new String[]{"Merge sort", "Quicksort", "Bubble sort", "Insertion sort", "Selection sort"};
         algorithmSelectButtons = new LinkedList<>();
-        algorithmSelectButtons.add(new JButton("Merge sort"));
-        algorithmSelectButtons.add(new JButton("Quicksort"));
-        algorithmSelectButtons.add(new JButton("Bubble sort"));
-        algorithmSelectButtons.add(new JButton("Insertion sort"));
-        algorithmSelectButtons.add(new JButton("Selection sort"));
-
-        Color defaultTextColor = new Color(0, 0, 0, 255);
-        for(JButton button : algorithmSelectButtons) {
+        
+        for(String s : buttonText) {
+            JButton button = new JButton(s);
             button.addActionListener(e -> selectAlgorithm(button));
             button.setForeground(defaultTextColor);
             button.setFont(new Font("plain", Font.BOLD, 13));
             button.setOpaque(false);
+            algorithmSelectButtons.add(button);
         }
-
-        startSearchButton.setForeground(defaultTextColor);
-        startSearchButton.setFont(new Font("plain", Font.BOLD, 13));
-        startSearchButton.setOpaque(false);
-        randomizeDataButton.setForeground(defaultTextColor);
-        randomizeDataButton.setFont(new Font("plain", Font.BOLD, 15));
-        randomizeDataButton.setOpaque(false);
 
         JLabel algorithmPanelLabel  = createAlgoPanelLabel();
         JPanel animationSpeedSlider = createAnimationSpeedSlider();
