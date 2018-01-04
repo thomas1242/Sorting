@@ -359,7 +359,7 @@ class ColorDisplay extends JPanel {
         for (int i = 0; i < sliders.length; i++) {
             sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 255, vals[i]);
             sliders[i].setForeground(textColors[i]);
-            sliders[i].addChangeListener(new Event());
+            sliders[i].addChangeListener(event -> drawImage());
             sliders[i].setMajorTickSpacing(85);
             sliders[i].setPaintLabels(true);
             sliders[i].setFont(new Font("plain", Font.BOLD, 13));
@@ -402,13 +402,6 @@ class ColorDisplay extends JPanel {
         imagePanel.setColors(start, end);
         imagePanel.drawAll();
         repaint();
-    }
-
-    class Event implements ChangeListener {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            drawImage();
-        }
     }
 
     @Override
