@@ -40,16 +40,16 @@ public class ControlPanel extends JPanel {
     }
 
     private void addMouseListeners() {
-        addMouseListener( new MouseAdapter() {
-            public void mousePressed( MouseEvent event ) {
-                if(event.getButton() == MouseEvent.BUTTON1) {
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
+                if (event.getButton() == MouseEvent.BUTTON1) {
                     x = (int)event.getPoint().getX();
                     y = (int)event.getPoint().getY();
                     imagePanel.repaint();
                 }
             }
-        } );
-        addMouseMotionListener( new MouseMotionAdapter() {
+        });
+        addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent event) {
                 int x_offset = (int)event.getPoint().getX() - x;
                 int y_offset = (int)event.getPoint().getY() - y;
@@ -66,14 +66,14 @@ public class ControlPanel extends JPanel {
                 colorDisplay.setBounds(colorDisplay.curr_x, colorDisplay.curr_y, colorDisplay.width, colorDisplay.height);
                 imagePanel.repaint();
             }
-        } );
+        });
     }
 
     private void runSelectedAlgorithm() {
-        startSearchButton.setText( "Pause");
-        startSearchButton.setForeground( Color.RED );
-        new Thread( () -> {
-            if(selectedAlgorithm.equals("Quicksort"))
+        startSearchButton.setText("Pause");
+        startSearchButton.setForeground(Color.RED);
+        new Thread(() -> {
+            if (selectedAlgorithm.equals("Quicksort"))
                 imagePanel.quickSort();
             else if (selectedAlgorithm.equals("Merge sort"))
                 imagePanel.mergeSort();
@@ -89,19 +89,19 @@ public class ControlPanel extends JPanel {
 
     public void pauseSearch() {
         startSearchButton.setText("Resume");
-        startSearchButton.setForeground( new Color(0, 175, 0, 255) );
+        startSearchButton.setForeground(new Color(0, 175, 0, 255));
         // imagePanel.pause();
     }
 
     public void resumeSearch() {
         startSearchButton.setText("Pause");
-        startSearchButton.setForeground( Color.RED );
+        startSearchButton.setForeground(Color.RED);
         // imagePanel.resume();
     }
 
     private void clearAll() {
         Color textColor = new Color(0, 0, 0, 255);
-        for(JButton button : algorithmSelectButtons) {
+        for (JButton button : algorithmSelectButtons) {
             button.setForeground(textColor);
             button.setFont(new Font("plain", Font.BOLD, 13));
         }
@@ -113,7 +113,7 @@ public class ControlPanel extends JPanel {
     }
 
     private void setButtonFont(JButton button, Color color, int size) {
-        button.setForeground( color );
+        button.setForeground(color);
         button.setFont(new Font("plain", Font.BOLD, size));
     }
 
@@ -123,7 +123,7 @@ public class ControlPanel extends JPanel {
         startSearchButton = new JButton("Start sort");
         startSearchButton.addActionListener(e -> {
             String s = startSearchButton.getText();
-            if(s.equals("Start sort"))
+            if (s.equals("Start sort"))
                 runSelectedAlgorithm();
             else if (s.equals("Pause"))
                 pauseSearch();
@@ -146,7 +146,7 @@ public class ControlPanel extends JPanel {
         String[] buttonText = new String[]{"Merge sort", "Quicksort", "Bubble sort", "Insertion sort", "Selection sort"};
         algorithmSelectButtons = new LinkedList<>();
         
-        for(String s : buttonText) {
+        for (String s : buttonText) {
             JButton button = new JButton(s);
             button.addActionListener(e -> selectAlgorithm(button));
             button.setForeground(defaultTextColor);
@@ -163,7 +163,7 @@ public class ControlPanel extends JPanel {
         add(startSearchButton);
         add(randomizeDataButton);
         add(algorithmPanelLabel);
-        for(JButton button : algorithmSelectButtons) add(button);
+        for (JButton button : algorithmSelectButtons) add(button);
         add(animationSpeedSlider);
         add(dataSetSizeSlider);
     }
@@ -171,7 +171,7 @@ public class ControlPanel extends JPanel {
     private void selectAlgorithm(JButton button) {
         this.selectedAlgorithm = button.getText();
         clearAll();
-        button.setForeground( new Color(0, 175, 0, 255) );
+        button.setForeground(new Color(0, 175, 0, 255));
     }
 
     private JPanel createAnimationSpeedSlider() {
@@ -179,12 +179,12 @@ public class ControlPanel extends JPanel {
         
         JLabel speedLabel = new JLabel(" " + 1000/171 + " operations/sec");
         speedLabel.setFont(new Font("plain", Font.BOLD, 14));
-        speedLabel.setForeground( new Color(0xffdddddd) );
+        speedLabel.setForeground(new Color(0xffdddddd));
 
         JSlider slider = new JSlider(1, 200, 30);
         slider.addChangeListener(e -> {
             speedLabel.setText(" " + (1000 / (1 + slider.getMaximum() - slider.getValue())) + " operations/sec");
-            imagePanel.setSpeed( 1 + slider.getMaximum() - slider.getValue() );
+            imagePanel.setSpeed(1 + slider.getMaximum() - slider.getValue());
         });
         slider.setMinorTickSpacing(1);
         slider.setSnapToTicks(true);
@@ -200,26 +200,26 @@ public class ControlPanel extends JPanel {
     private JLabel createAlgoPanelLabel() {
         JLabel algo_label = new JLabel(" Algorithms");
         algo_label.setFont(new Font("plain", Font.BOLD, 15));
-        algo_label.setForeground( new Color(0xffdddddd) );
+        algo_label.setForeground(new Color(0xffdddddd));
         return algo_label;
     }
 
     private JPanel createDataSetSizeSlider() {
-        JPanel dataSetSizeSlider = new JPanel( new GridLayout(0, 1) );
+        JPanel dataSetSizeSlider = new JPanel(new GridLayout(0, 1));
         
         int minWidth = 256;
-        while(((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) minWidth--;
-        imagePanel.setDataWidth( 12 );
+        while (((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) minWidth--;
+        imagePanel.setDataWidth(12);
         imagePanel.drawAll();
 
         JLabel sizeLabel = new JLabel(" " + (int)(imagePanel.getImageWidth() * 0.9) / 75 + " data points");
         sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
-        sizeLabel.setForeground( new Color(0xffdddddd) );
+        sizeLabel.setForeground(new Color(0xffdddddd));
         sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
         
         JSlider slider = new JSlider(1, minWidth, minWidth - 10);
         slider.addChangeListener(e -> {
-            imagePanel.setDataWidth( 1 + slider.getMaximum() - slider.getValue() );
+            imagePanel.setDataWidth(1 + slider.getMaximum() - slider.getValue());
             sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
             imagePanel.drawAll();
         });
@@ -263,15 +263,13 @@ class ColorChooser extends JPanel {
         g2d = (Graphics2D)image.getGraphics();
         drawImage();
 
-        addMouseListener( new MouseAdapter() {
-            public void mousePressed( MouseEvent event ) {
-                if(event.getButton() == MouseEvent.BUTTON1) {
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
+                if (event.getButton() == MouseEvent.BUTTON1) {
                     x = (int)event.getPoint().getX();
                     y = (int)event.getPoint().getY();
-                    if(x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth) {
-                        isVisible ^= true; 
-                        colorDisplay.setVisible(isVisible);
-                    }
+                    if (x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth) 
+                        colorDisplay.setVisible(isVisible ^= true);
                     imagePanel.repaint();
                 }
             }
@@ -286,7 +284,7 @@ class ColorChooser extends JPanel {
     }
 
     public void drawImage() {
-        Color[] colors = Interpolation.getColors(startColor, endColor, image.getWidth() );
+        Color[] colors = Interpolation.getColors(startColor, endColor, image.getWidth());
         for (int i = 0; i < image.getWidth(); i++) {
             g2d.setColor(colors[i]);
             g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
@@ -345,7 +343,7 @@ class ColorDisplay extends JPanel {
     }
 
     private void drawBackground() {
-        setBackground( new Color(70, 70, 70, 130) );
+        setBackground(new Color(70, 70, 70, 130));
         setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70, 130), borderWidth));
     }
 
@@ -368,14 +366,14 @@ class ColorDisplay extends JPanel {
     }
 
     private void addMouseListeners() {
-         addMouseListener( new MouseAdapter() {
-            public void mousePressed( MouseEvent event ) {
+         addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
                 x = (int)event.getPoint().getX();
                 y = (int)event.getPoint().getY();
                 imagePanel.repaint();
             }
-        } );
-        addMouseMotionListener( new MouseMotionAdapter() {
+        });
+        addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent event) {
                 int x_offset = (int)event.getPoint().getX() - x;
                 int y_offset = (int)event.getPoint().getY() - y;
@@ -384,14 +382,14 @@ class ColorDisplay extends JPanel {
                 setBounds(curr_x, curr_y, width, height);
                 imagePanel.repaint();
             }
-        } );
+        });
     }
 
     private void drawImage() {
-        int start = 0xFF000000 | sliders[0].getValue() << 16 | sliders[2].getValue() << 8 | sliders[4].getValue();
-        int end   = 0xFF000000 | sliders[1].getValue() << 16 | sliders[3].getValue() << 8 | sliders[5].getValue();
+        int start = 0xFF << 24 | sliders[0].getValue() << 16 | sliders[2].getValue() << 8 | sliders[4].getValue();
+        int end   = 0xFF << 24 | sliders[1].getValue() << 16 | sliders[3].getValue() << 8 | sliders[5].getValue();
 
-        Color[] colors = Interpolation.getColors( start, end, image.getWidth() );
+        Color[] colors = Interpolation.getColors(start, end, image.getWidth());
         for (int i = 0; i < image.getWidth(); i++) {
             g2d.setColor(colors[i]);
             g2d.drawLine(i + borderWidth, borderWidth, i + borderWidth, image.getHeight() + borderWidth);
