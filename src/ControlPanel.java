@@ -70,20 +70,14 @@ public class ControlPanel extends JPanel {
     }
 
     private void runSelectedAlgorithm() {
-        startSearchButton.setText("Pause");
-        startSearchButton.setForeground(Color.RED);
-        new Thread(() -> {
-            if (selectedAlgorithm.equals("Quicksort"))
-                imagePanel.quickSort();
-            else if (selectedAlgorithm.equals("Merge sort"))
-                imagePanel.mergeSort();
-            else if (selectedAlgorithm.equals("Bubble sort"))
-                imagePanel.bubbleSort();
-            else if (selectedAlgorithm.equals("Insertion sort"))
-                imagePanel.insertSort();
-            else if (selectedAlgorithm.equals("Selection sort"))
-                imagePanel.selectSort();
-            setStartSearchButtonText("Start sort", new Color(0, 0, 0, 250));
+        setButtonTextAndColor(startSearchButton, "Pause", Color.RED);
+        new Thread( () -> {
+            if      (selectedAlgorithm.equals("Quicksort"))       imagePanel.quickSort();
+            else if (selectedAlgorithm.equals("Merge sort"))      imagePanel.mergeSort();
+            else if (selectedAlgorithm.equals("Bubble sort"))     imagePanel.bubbleSort();
+            else if (selectedAlgorithm.equals("Insertion sort"))  imagePanel.insertSort();
+            else if (selectedAlgorithm.equals("Selection sort"))  imagePanel.selectSort();
+            setButtonTextAndColor(startSearchButton, "Start sort", new Color(0, 0, 0, 250));
         }).start();
     }
 
@@ -107,9 +101,9 @@ public class ControlPanel extends JPanel {
         }
     }
 
-    public void setStartSearchButtonText(String s, Color c) {
-        startSearchButton.setText(s);
-        startSearchButton.setForeground(c);
+    private void setButtonTextAndColor(JButton btn, String s, Color c) {
+        btn.setText(s);
+        btn.setForeground(c);
     }
 
     private void addComponents() {      
@@ -131,8 +125,7 @@ public class ControlPanel extends JPanel {
         });
 
         algorithmSelectButtons = new LinkedList<>();
-        String[] buttonText = new String[]{"Merge sort", "Quicksort", "Bubble sort", "Insertion sort", "Selection sort"};        
-        for (String s : buttonText) {
+        for (String s : new String[]{"Merge sort", "Quicksort", "Bubble sort", "Insertion sort", "Selection sort"}) {
             JButton button = createButton(s, Color.BLACK, 13);
             button.addActionListener(e -> selectAlgorithm(button));
             algorithmSelectButtons.add(button);
