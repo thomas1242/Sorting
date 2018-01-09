@@ -112,15 +112,14 @@ public class ControlPanel extends JPanel {
         startSearchButton.setForeground(c);
     }
 
-    private void setButtonFont(JButton button, Color color, int size) {
-        button.setForeground(color);
-        button.setFont(new Font("plain", Font.BOLD, size));
-    }
+    private void addComponents() {      
+        JButton randomizeDataButton = createButton("Randomize Data", Color.BLACK, 15);
+        randomizeDataButton.addActionListener(e -> {
+            imagePanel.randomizeData();
+            imagePanel.animateRandomizeData();
+        });
 
-    private void addComponents() {
-        Color defaultTextColor = new Color(0, 0, 0, 255);
-        
-        startSearchButton = new JButton("Start sort");
+        startSearchButton = createButton("Start sort", Color.BLACK, 13);
         startSearchButton.addActionListener(e -> {
             String s = startSearchButton.getText();
             if (s.equals("Start sort"))
@@ -130,28 +129,12 @@ public class ControlPanel extends JPanel {
             else if (s.equals("Resume"))
                 resumeSearch();
         });
-        startSearchButton.setForeground(defaultTextColor);
-        startSearchButton.setFont(new Font("plain", Font.BOLD, 13));
-        startSearchButton.setOpaque(false);
 
-        JButton randomizeDataButton = new JButton("Randomize Data");
-        randomizeDataButton.addActionListener(e -> {
-            imagePanel.randomizeData();
-            imagePanel.animateRandomizeData();
-        });
-        randomizeDataButton.setForeground(defaultTextColor);
-        randomizeDataButton.setFont(new Font("plain", Font.BOLD, 15));
-        randomizeDataButton.setOpaque(false);
-
-        String[] buttonText = new String[]{"Merge sort", "Quicksort", "Bubble sort", "Insertion sort", "Selection sort"};
         algorithmSelectButtons = new LinkedList<>();
-        
+        String[] buttonText = new String[]{"Merge sort", "Quicksort", "Bubble sort", "Insertion sort", "Selection sort"};        
         for (String s : buttonText) {
-            JButton button = new JButton(s);
+            JButton button = createButton(s, Color.BLACK, 13);
             button.addActionListener(e -> selectAlgorithm(button));
-            button.setForeground(defaultTextColor);
-            button.setFont(new Font("plain", Font.BOLD, 13));
-            button.setOpaque(false);
             algorithmSelectButtons.add(button);
         }
 
@@ -168,70 +151,73 @@ public class ControlPanel extends JPanel {
         add(dataSetSizeSlider);
     }
 
+    private JButton createButton(String s, Color color, int fontSize) {
+        JButton button = new JButton(s);
+        button.setForeground(color);
+        button.setFont(new Font("plain", Font.BOLD, fontSize));
+        button.setOpaque(false);
+        return button;
+    }
+
     private void selectAlgorithm(JButton button) {
         this.selectedAlgorithm = button.getText();
         clearAll();
         button.setForeground(new Color(0, 175, 0, 255));
     }
 
-    private JPanel createAnimationSpeedSlider() {
-        JPanel speedSlider = new JPanel();
-        
-        JLabel speedLabel = new JLabel(" " + 1000/171 + " operations/sec");
-        speedLabel.setFont(new Font("plain", Font.BOLD, 14));
-        speedLabel.setForeground(new Color(0xffdddddd));
-
-        JSlider slider = new JSlider(1, 200, 30);
+    private JPanel createAnimationSpeedSlider() {        
+        JLabel label = createLabel(" " + 1000/171 + " operations/sec", new Color(0xffdddddd), 14);
+        JSlider slider =createSlider(1, 200, 30);
         slider.addChangeListener(e -> {
-            speedLabel.setText(" " + (1000 / (1 + slider.getMaximum() - slider.getValue())) + " operations/sec");
+            label.setText(" " + (1000 / (1 + slider.getMaximum() - slider.getValue())) + " operations/sec");
             imagePanel.setSpeed(1 + slider.getMaximum() - slider.getValue());
         });
-        slider.setMinorTickSpacing(1);
-        slider.setSnapToTicks(true);
-
-        speedSlider.setLayout(new GridLayout(0, 1));
-        speedSlider.add(speedLabel, BorderLayout.CENTER);
-        speedSlider.add(slider, BorderLayout.SOUTH);
-        speedSlider.setOpaque(false);
-        speedSlider.setVisible(true);
-        return speedSlider;
+        return createSliderPanel(label, slider);
     }
 
-    private JLabel createAlgoPanelLabel() {
-        JLabel algo_label = new JLabel(" Algorithms");
-        algo_label.setFont(new Font("plain", Font.BOLD, 15));
-        algo_label.setForeground(new Color(0xffdddddd));
-        return algo_label;
+    private JLabel createLabel(String s, Color color, int fontSize) {
+        JLabel label = new JLabel(s);
+        label.setFont(new Font("plain", Font.BOLD, fontSize));
+        label.setForeground(color);
+        return label;
     }
 
-    private JPanel createDataSetSizeSlider() {
-        JPanel dataSetSizeSlider = new JPanel(new GridLayout(0, 1));
-        
-        int minWidth = 256;
-        while (((int)(imagePanel.getImageWidth() * 0.9) / minWidth) % 20 != 0) minWidth--;
-        imagePanel.setDataWidth(12);
-        imagePanel.drawAll();
-
-        JLabel sizeLabel = new JLabel(" " + (int)(imagePanel.getImageWidth() * 0.9) / 75 + " data points");
-        sizeLabel.setFont(new Font("plain", Font.BOLD, 14));
-        sizeLabel.setForeground(new Color(0xffdddddd));
-        sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
-        
-        JSlider slider = new JSlider(1, minWidth, minWidth - 10);
-        slider.addChangeListener(e -> {
-            imagePanel.setDataWidth(1 + slider.getMaximum() - slider.getValue());
-            sizeLabel.setText(" " + imagePanel.getNumCells() + " data points");
-            imagePanel.drawAll();
-        });
+    private JSlider createSlider(int low, int high, int value) {
+        JSlider slider = new JSlider();
         slider.setMinorTickSpacing(1);
         slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
+        return slider;
+    }
 
-        dataSetSizeSlider.add(sizeLabel, BorderLayout.CENTER);
-        dataSetSizeSlider.add(slider, BorderLayout.SOUTH);
-        dataSetSizeSlider.setOpaque(false);
-        dataSetSizeSlider.setVisible(true);
-        return dataSetSizeSlider;
+    private JPanel createSliderPanel(JLabel label, JSlider slider) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1));
+        panel.add(label, BorderLayout.CENTER);
+        panel.add(slider, BorderLayout.SOUTH);
+        panel.setOpaque(false);
+        panel.setVisible(true);
+        return panel;
+    }
+
+    private JLabel createAlgoPanelLabel() {
+        return createLabel(" Algorithms", new Color(0xffdddddd), 15);
+    }
+
+    private JPanel createDataSetSizeSlider() {        
+        int minWidth = 256;
+        while (((int)(imagePanel.getImageWidth() * 0.9) / minWidth--) % 20 != 0);
+        imagePanel.setDataWidth(12);
+        imagePanel.drawAll();
+
+        JLabel label = createLabel(" " + imagePanel.getNumCells() + " data points", new Color(0xffdddddd), 14);
+        JSlider slider = createSlider(1, minWidth, minWidth - 10); 
+        slider.addChangeListener(e -> {
+            imagePanel.setDataWidth(1 + slider.getMaximum() - slider.getValue());
+            label.setText(" " + imagePanel.getNumCells() + " data points");
+            imagePanel.drawAll();
+        });
+        return createSliderPanel(label, slider);
     }
 
     public void setColorChooser(ColorChooser colorChooser, ColorDisplay popUp) {
@@ -351,11 +337,11 @@ class ColorDisplay extends JPanel {
         setLayout(new GridLayout(0, 2));
 
         sliders = new JSlider[6];
-        int[] vals = new int[]{0xCC, 0xFF, 0xCC, 0xD7, 0xCC, 0x00};
+        int[] initVals = new int[]{0xCC, 0xFF, 0xCC, 0xD7, 0xCC, 0x00};
         Color[] textColors = new Color[]{Color.RED, Color.RED, Color.GREEN, Color.GREEN, Color.BLUE, Color.BLUE};
 
         for (int i = 0; i < sliders.length; i++) {
-            sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 255, vals[i]);
+            sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 255, initVals[i]);
             sliders[i].setForeground(textColors[i]);
             sliders[i].addChangeListener(event -> drawImage());
             sliders[i].setMajorTickSpacing(85);

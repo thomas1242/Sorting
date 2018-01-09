@@ -9,7 +9,7 @@ public class ImagePanel extends JLayeredPane {
     private Graphics2D g2d;
     private Cell[] cols;
     private int height, width, animationSpeed = 30;
-    private Color startColor = new Color(0xffcccccc), endColor = new Color(0x0fffd700), highlightColor = new Color(0xffc80000);
+    private Color minColor = new Color(0xffcccccc), maxColor = new Color(0x0fffd700), highlightColor = new Color(0xffc80000);
 
     public ImagePanel(int width, int height) {
         setBounds(0, 0, width, height);
@@ -63,9 +63,9 @@ public class ImagePanel extends JLayeredPane {
 
         int middle = (left + right) / 2;
 
-        mergeSort(arr, left, middle);            // sort left half including middle element
-        mergeSort(arr, middle + 1, right);       // sort right half
-        merge(arr, left, right, middle);         // merge sorted halfs
+        mergeSort(arr, left, middle);            
+        mergeSort(arr, middle + 1, right);       
+        merge(arr, left, right, middle);         
     }
 
     private void merge(Cell[] arr, int left, int right, int middle) {
@@ -152,49 +152,37 @@ public class ImagePanel extends JLayeredPane {
 
     public void drawAll() {
         final int width = image.getWidth(), height = this.height;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                g2d.setColor(new Color(0xffabc123));        // draw background
-                g2d.fillRect((int)(width * 0.05), (int)(width * 0.05) + 1, (int)(width * 0.9), height - 1);
-                for (int i = cols.length - 1; i >= 0; i--) 
-                    drawCell(cols[i].color, i, cols[i]);
-                g2d.setColor(Color.BLACK);                  // draw border
-                g2d.drawRect((int)(width * 0.05), (int)(width * 0.05), (int)(width * 0.9), height);
-                repaint();
-            }
+        SwingUtilities.invokeLater( () -> {
+            g2d.setColor(new Color(0xffabc123));        // draw background
+            g2d.fillRect((int)(width * 0.05), (int)(width * 0.05) + 1, (int)(width * 0.9), height - 1);
+            for (int i = cols.length - 1; i >= 0; i--)  // draw columns
+                drawCell(cols[i].color, i, cols[i]);
+            g2d.setColor(Color.BLACK);                  // draw border
+            g2d.drawRect((int)(width * 0.05), (int)(width * 0.05), (int)(width * 0.9), height);
+            repaint();
         });
     }
 
-    public void drawCell(Color color, int index, Cell c, int delay) {
-        final int width = this.width, height = this.height;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                int x = (int)(image.getWidth() * 0.05);
-                int y = (int)(image.getWidth() * 0.05);
-                x += ((int)(image.getWidth() * 0.9) - cols.length * width) / 2;
-                g2d.setColor(new Color(0xffabc123));
-                g2d.fillRect(x + index * width, y + 1, width, height - 1);
-                g2d.setColor(color);
-                g2d.fillRect(x + index * width, y + (height - c.pixelHeight), width, c.pixelHeight);
-                g2d.setColor(Color.BLACK);
-                g2d.drawLine(x + index * width, y + (height - c.pixelHeight), x + index * width + width - 1, y + (height - c.pixelHeight));
-                repaint();
-            }
-        });
-        try{ Thread.sleep(delay);   }
-        catch(Exception e)        {}
-    }
-
-    public void drawCell(Color color, int index, Cell c) {
+    public void drawCell(Color color, int index, Cell cell) {
         int x = (int)(image.getWidth() * 0.05);
         int y = (int)(image.getWidth() * 0.05);
         x += ((int)(image.getWidth() * 0.9) - cols.length * width) / 2;
         g2d.setColor(new Color(0xffabc123));
         g2d.fillRect(x + index * width, y + 1, width, height - 1);
         g2d.setColor(color);
-        g2d.fillRect(x + index * width, y + (this.height - c.pixelHeight), width, c.pixelHeight);
+        g2d.fillRect(x + index * width, y + height - cell.pixelHeight, width, cell.pixelHeight);
         g2d.setColor(Color.BLACK);
-        g2d.drawLine(x + index * width, y + (this.height - c.pixelHeight), x + index * width + width - 1, y + (this.height - c.pixelHeight));
+        g2d.drawLine(x + index * width, y + height - cell.pixelHeight, x + index * width + width - 1, y + height - cell.pixelHeight);
+    }
+
+    public void drawCell(Color color, int index, Cell cell, int delay) {
+        final int width = this.width, height = this.height;
+        SwingUtilities.invokeLater( () -> {
+             drawCell(color, index, cell);
+             repaint();
+        });
+        try{ Thread.sleep(delay); }
+        catch(Exception e) {}
     }
 
     private void addComponents() {
@@ -225,13 +213,13 @@ public class ImagePanel extends JLayeredPane {
                  
         Arrays.sort(temp, (Cell a, Cell b) -> a.val - b.val);
 
-        Color[] colors = Interpolation.getColors(startColor, endColor, cols.length);
-        for (int i = 0; i < temp.length; i++)       // assign interpolated colors
+        Color[] colors = Interpolation.getColors(minColor, maxColor, cols.length);
+        for (int i = 0; i < temp.length; i++)
             temp[i].color = colors[i];
     }
 
     public void animateRandomizeData() {
-        new Thread(() -> {
+        new Thread( () -> {
             int delay = 1000 / cols.length > 0 ? 1000 / cols.length : 1;
             for (int i = 0; i < cols.length / 2; i++) {
                 drawCell(cols[i].color, i, cols[i], 0);
@@ -260,8 +248,8 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public void setColors(int startRGB, int endRGB) {
-        startColor = new Color(startRGB);
-        endColor = new Color(endRGB);
+        minColor = new Color(startRGB);
+        maxColor = new Color(endRGB);
         assignColors();
     }
 
