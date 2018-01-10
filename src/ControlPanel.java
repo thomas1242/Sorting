@@ -106,7 +106,7 @@ public class ControlPanel extends JPanel {
         btn.setForeground(c);
     }
 
-    private void addComponents() {      
+    private void addComponents() {
         JButton randomizeDataButton = createButton("Randomize Data", Color.BLACK, 15);
         randomizeDataButton.addActionListener(e -> {
             imagePanel.randomizeData();
@@ -158,8 +158,8 @@ public class ControlPanel extends JPanel {
         button.setForeground(new Color(0, 175, 0, 255));
     }
 
-    private JPanel createAnimationSpeedSlider() {        
-        JLabel label = createLabel(" " + 1000/171 + " operations/sec", new Color(0xffdddddd), 14);
+    private JPanel createAnimationSpeedSlider() {
+        JLabel label = createLabel(" " + 1000/52 + " operations/sec", new Color(0xffdddddd), 14);
         JSlider slider =createSlider(1, 200, 30);
         slider.addChangeListener(e -> {
             label.setText(" " + (1000 / (1 + slider.getMaximum() - slider.getValue())) + " operations/sec");
@@ -197,14 +197,14 @@ public class ControlPanel extends JPanel {
         return createLabel(" Algorithms", new Color(0xffdddddd), 15);
     }
 
-    private JPanel createDataSetSizeSlider() {        
+    private JPanel createDataSetSizeSlider() {
         int minWidth = 256;
         while (((int)(imagePanel.getImageWidth() * 0.9) / minWidth--) % 20 != 0);
-        imagePanel.setDataWidth(12);
+        imagePanel.setDataWidth(51);
         imagePanel.drawAll();
 
         JLabel label = createLabel(" " + imagePanel.getNumCells() + " data points", new Color(0xffdddddd), 14);
-        JSlider slider = createSlider(1, minWidth, minWidth - 10); 
+        JSlider slider = createSlider(1, minWidth, minWidth - 10);
         slider.addChangeListener(e -> {
             imagePanel.setDataWidth(1 + slider.getMaximum() - slider.getValue());
             label.setText(" " + imagePanel.getNumCells() + " data points");
@@ -247,7 +247,7 @@ class ColorChooser extends JPanel {
                 if (event.getButton() == MouseEvent.BUTTON1) {
                     x = (int)event.getPoint().getX();
                     y = (int)event.getPoint().getY();
-                    if (x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth) 
+                    if (x > borderWidth && y > borderWidth && x < image.getWidth() + borderWidth && y < image.getHeight() + borderWidth)
                         colorDisplay.setVisible(isVisible ^= true);
                     imagePanel.repaint();
                 }
