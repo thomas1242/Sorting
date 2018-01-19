@@ -84,7 +84,6 @@ public class ImagePanel extends JLayeredPane {
             drawCell(arr[k - 1].color, k - 1, arr[k - 1], 0);
         }
 
-        drawCell(Color.BLACK, k, arr[k], 1);
         while (i < leftArr.length) {
             arr[k++] = leftArr[i++];
             drawCell(highlightColor, k - 1, arr[k - 1], animationSpeed);
