@@ -1,6 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.List;
@@ -345,7 +345,7 @@ class ColorDisplay extends JPanel {
     }
 
     private void addMouseListeners() {
-         addMouseListener(new MouseAdapter() {
+        addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent event) {
                 x = (int)event.getPoint().getX();
                 y = (int)event.getPoint().getY();
