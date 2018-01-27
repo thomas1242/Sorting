@@ -14,8 +14,9 @@ java -cp Sorting/src Main                           # run the program
 
 ## Usage
 
-* Choose size of data set.<br>
+* Choose number of data points.<br>
 * Select an algorithm.<br>
 * Click start sort.<br>
+* Adjust animation speed and colors.
 
 ![Merge sort](images/colorSorts.gif)
