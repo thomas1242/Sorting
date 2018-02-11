@@ -166,6 +166,7 @@ public class ImagePanel extends JLayeredPane {
         int x = 0;
         int y = 0;
         x += ((int)(image.getWidth() * 1.0) - cells.length * width) / 2;
+        
         g2d.setColor(new Color(0xffabc123));
         g2d.fillRect(x + index * width, y + 1, width, height - 1);
         g2d.setColor(color);
@@ -200,7 +201,7 @@ public class ImagePanel extends JLayeredPane {
         cells = new Cell[cells.length];
         for (int i = 0; i < cells.length; i++) {
             int randVal = rand.nextInt(2 * cells.length + 1);
-            cells[i] = new Cell(randVal, (int)(height * randVal / (2 * cells.length + 1)));
+            cells[i] = new Cell(randVal, (int)((height) * randVal / (2 * cells.length + 1)));
         }
         assignColors();
     }
@@ -229,7 +230,7 @@ public class ImagePanel extends JLayeredPane {
     }
 
     public void setDataWidth(int pixelWidth) {
-        int numCells = (int)(image.getWidth() * 0.9) / pixelWidth;
+        int numCells = (int)(image.getWidth() * 1.0) / pixelWidth;
         cells = new Cell[numCells];
         this.width = pixelWidth;  // column width
         randomizeData();

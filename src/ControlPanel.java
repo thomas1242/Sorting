@@ -199,7 +199,7 @@ public class ControlPanel extends JPanel {
 
     private JPanel createDataSetSizeSlider() {
         int minWidth = 256;
-        while (((int)(imagePanel.getImageWidth() * 0.9) / minWidth--) % 20 != 0);
+        // while (((int)(imagePanel.getImageWidth() * 1.0) / minWidth--) % 20 != 0);
         imagePanel.setDataWidth(51);
         imagePanel.drawAll();
 
