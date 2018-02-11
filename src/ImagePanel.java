@@ -15,7 +15,7 @@ public class ImagePanel extends JLayeredPane {
         setBounds(0, 0, width, height);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)image.getGraphics();
-        this.height = image.getHeight() - 2 * (int)(image.getWidth() * 0.05);
+        this.height = image.getHeight();
         setDataWidth(12);
         addComponents();
         drawAll();
@@ -153,19 +153,19 @@ public class ImagePanel extends JLayeredPane {
         final int width = image.getWidth(), height = this.height;
         SwingUtilities.invokeLater( () -> {
             g2d.setColor(new Color(0xffabc123));         // draw background
-            g2d.fillRect((int)(width * 0.05), (int)(width * 0.05) + 1, (int)(width * 0.9), height - 1);
+            g2d.fillRect((int)(width * 0), (int)(width * 0) + 1, (int)(width * 1.0), height - 1);
             for (int i = cells.length - 1; i >= 0; i--)  // draw cells
                 drawCell(cells[i].color, i, cells[i]);
             g2d.setColor(Color.BLACK);                   // draw border
-            g2d.drawRect((int)(width * 0.05), (int)(width * 0.05), (int)(width * 0.9), height);
+            g2d.drawRect((int)(width * 0), (int)(width * 0), (int)(width * 1.0), height);
             repaint();
         });
     }
 
     public void drawCell(Color color, int index, Cell cell) {
-        int x = (int)(image.getWidth() * 0.05);
-        int y = (int)(image.getWidth() * 0.05);
-        x += ((int)(image.getWidth() * 0.9) - cells.length * width) / 2;
+        int x = 0;
+        int y = 0;
+        x += ((int)(image.getWidth() * 1.0) - cells.length * width) / 2;
         g2d.setColor(new Color(0xffabc123));
         g2d.fillRect(x + index * width, y + 1, width, height - 1);
         g2d.setColor(color);
