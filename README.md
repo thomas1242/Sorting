@@ -1,6 +1,6 @@
 # Sorting
 
-Visualizing sorting algorithms
+A tool for visualizing sorting algorithms
 
 ## Compilation and running
 
