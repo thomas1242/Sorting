@@ -153,11 +153,11 @@ public class ImagePanel extends JLayeredPane {
         final int width = image.getWidth(), height = this.height;
         SwingUtilities.invokeLater( () -> {
             g2d.setColor(new Color(0xffabc123));         // draw background
-            g2d.fillRect((int)(width * 0), (int)(width * 0) + 1, (int)(width * 1.0), height - 1);
+            g2d.fillRect(0, 0, width, height);
             for (int i = cells.length - 1; i >= 0; i--)  // draw cells
                 drawCell(cells[i].color, i, cells[i]);
             g2d.setColor(Color.BLACK);                   // draw border
-            g2d.drawRect((int)(width * 0), (int)(width * 0), (int)(width * 1.0), height);
+            g2d.drawRect(0, 0, width, height);
             repaint();
         });
     }
@@ -200,7 +200,7 @@ public class ImagePanel extends JLayeredPane {
         Random rand = new Random();
         cells = new Cell[cells.length];
         for (int i = 0; i < cells.length; i++) {
-            int randVal = rand.nextInt(2 * cells.length + 1);
+            int randVal = rand.nextInt(2 * cells.length - (int)(cells.length * 0.10)) + (int)(cells.length * 0.10);
             cells[i] = new Cell(randVal, (int)((height) * randVal / (2 * cells.length + 1)));
         }
         assignColors();
@@ -217,6 +217,10 @@ public class ImagePanel extends JLayeredPane {
 
     public void animateRandomizeData() {
         new Thread( () -> {
+            final int width = image.getWidth(), height = this.height;
+            g2d.setColor(new Color(0xffabc123));         // draw background
+            g2d.fillRect(0, 0, image.getWidth(), this.height);
+            repaint();
             int delay = 1000 / cells.length > 0 ? 1000 / cells.length : 1;
             for (int i = 0; i < cells.length / 2; i++) {
                 drawCell(cells[i].color, i, cells[i], 0);

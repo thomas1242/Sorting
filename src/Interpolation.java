@@ -26,7 +26,7 @@ public class Interpolation {
             B += deltaB;
 
             int intARGB = 0xFF << 24 | (int)R << 16 | (int)G << 8 | (int)B;
-            colors[i] = new Color( intARGB );
+            colors[i] = new Color(intARGB);
         }
 
         return colors;

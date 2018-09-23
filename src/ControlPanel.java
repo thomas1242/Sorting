@@ -10,7 +10,7 @@ public class ControlPanel extends JPanel {
 
     private JButton startSearchButton;
     private List<JButton> algorithmSelectButtons;
-    private String selectedAlgorithm = "Quicksort";
+    private String selectedAlgorithm = "Merge sort";
     public int x, y, curr_x, curr_y, width, height;
     private ColorChooser colorChooser;
     private ColorDisplay colorDisplay;
@@ -130,6 +130,7 @@ public class ControlPanel extends JPanel {
             button.addActionListener(e -> selectAlgorithm(button));
             algorithmSelectButtons.add(button);
         }
+        algorithmSelectButtons.get(0).setForeground(new Color(0, 175, 0, 255));
 
         JLabel algorithmPanelLabel  = createAlgoPanelLabel();
         JPanel animationSpeedSlider = createAnimationSpeedSlider();
