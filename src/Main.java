@@ -3,8 +3,8 @@ import java.awt.*;
 
 public class Main {
 
-    private static final int WIDTH  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-    private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+    private static final int WIDTH  = (int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 0.70);
+    private static final int HEIGHT = (int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 0.75);
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater( () -> createAndShowGUI() );
